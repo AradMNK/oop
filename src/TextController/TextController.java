@@ -96,7 +96,7 @@ public class TextController {
             return;
         }
 
-        Database.Changer.addToFollowers(Loginner.loginnedUser.getUsername(), username);
+        Database.Saver.addToFollowers(Loginner.loginnedUser.getUsername(), username);
     }
 
     public static void inputCommand(){

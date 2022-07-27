@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 
 public class User {
-    private String name, username, subtitle, bio, hashPass;
+    private String name, username, subtitle, bio;
     private Handle pfp, theme;
     private Feed feed;
     private final HashSet<DirectMessenger> dms = new HashSet<>();
@@ -48,19 +48,22 @@ public class User {
 
     public void post(String description){
         LocalDate date = LocalDate.now();
-        SaveHandle postID = new SaveHandle(username + date + description);
-        Database.Saver.addToPosts(username, name, LocalDate.now(), description, postID.getHandle(), getUserType().toString());
-        Database.Saver.updateFeedsFromPost(username, postID.getHandle());
+        int handle = Database.Saver.addToPosts(username, name, LocalDate.now(),
+                description, getUserType().toString());
+        for (User user: followers)
+            Database.Saver.updateFeedsFromPost(user.username, handle);
     }
 
     public void comment(String postID, String msg){
         LocalDate date = LocalDate.now();
-        SaveHandle commentID = new SaveHandle(username + date + postID + msg);
-        Database.Saver.addToComments(username, name, LocalDate.now(), postID, msg, commentID.getHandle());
-        Database.Saver.updateFeedsFromComment(username, commentID.getHandle());
+        int handle = Database.Saver.addToComments(username, name, LocalDate.now(), postID, msg);
+        for (User user: followers)
+            Database.Saver.updateFeedsFromComment(user.username, handle);
     }
 
     public void like(String postID){
-        Database.Changer.addToLikes(postID, this.username);
+        int handle = Database.Saver.addToLikes(postID, this.username);
+        for (User user: followers)
+            Database.Saver.updateFeedsFromLike(user.username, handle);
     }
 }

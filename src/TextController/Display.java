@@ -23,7 +23,7 @@ public class Display {
             }
 
             user = (args[0].equals(Loginner.loginnedUser.getUsername())) ?
-                    Loginner.loginnedUser : UserBuilder.getUserFromDatabase(args[0]);
+                    Loginner.loginnedUser : UserBuilder.getUserFromDatabaseDetailsOnly(args[0]);
         }
         else user = Loginner.loginnedUser;
 
@@ -53,7 +53,7 @@ public class Display {
             }
 
             user = (args[0].equals(Loginner.loginnedUser.getUsername())) ?
-                    Loginner.loginnedUser : UserBuilder.getUserFromDatabase(args[0]);
+                    Loginner.loginnedUser : UserBuilder.getUserFromDatabaseWithPosts(args[0]);
         }
         else user = Loginner.loginnedUser;
 
@@ -84,7 +84,7 @@ public class Display {
             }
 
             user = (args[0].equals(Loginner.loginnedUser.getUsername())) ?
-                    Loginner.loginnedUser : UserBuilder.getUserFromDatabase(args[0]);
+                    Loginner.loginnedUser : UserBuilder.getUserFromDatabaseWithFollowers(args[0]);
         }
         else user = Loginner.loginnedUser;
 
@@ -106,7 +106,7 @@ public class Display {
             }
 
             user = (args[0].equals(Loginner.loginnedUser.getUsername())) ?
-                    Loginner.loginnedUser : UserBuilder.getUserFromDatabase(args[0]);
+                    Loginner.loginnedUser : UserBuilder.getUserFromDatabaseWithFollowings(args[0]);
         }
         else user = Loginner.loginnedUser;
 

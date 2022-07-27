@@ -51,13 +51,13 @@ public class FeedController {
             TextController.println("-".repeat(overlineCount));
             writeComment(comment);
             TextController.println("");
-            Database.Changer.removeCommentFromFeed(user.getUsername(), comment.getCommentID());
+            Database.Changer.removeCommentFromFeed(user.getUsername(), comment.getCommentID().getHandle());
         }
     }
 
     private static void showPosts(User user) {
         for (Post post : user.getFeed().getPosts()) {
-            Database.Changer.removePostFromFeed(user.getUsername(), post.getPostID());
+            Database.Changer.removePostFromFeed(user.getUsername(), post.getPostID().getHandle());
             writePost(post);
             TextController.println("‾".repeat(overlineCount));
         }

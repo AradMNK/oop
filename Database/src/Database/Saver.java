@@ -22,41 +22,42 @@ public class Saver {
     }
 
 
-    public static void addToPosts(String username, String name, LocalDate now, String description,
-                                  String saveHandle, String postType) {
+    public static int addToPosts(String username, String name, LocalDate now, String description,
+                                  String postType) {
         //FIXME create a table UNIQUE to every username
         // when creating a new account and name it something related to that and use that table now
+        return 0; //return the handle
     }
 
-    public static void addToComments(String username, String name, LocalDate now, String postID, String msg,
-                                     String saveHandle) {
+    public static int addToComments(String username, String name, LocalDate now, String postID, String msg) {
         //FIXME same as above
+        return 0; // return the handle
+    }
+
+    public static void addToFollowers(String usernameFollower, String usernameFollowed) {
+        //FIXME
+    }
+
+    public static int addToLikes(String postID, String username) {
+        //FIXME create a new table for a postID's likes and store usernames in it. THAT'S IT. nothing more nothing less
+        // and it has to be upon creation. Here u can change it.
+        return 0; // the ai handle
+    }
+
+    public static void updateFeedsFromLike(String username, int ID) {
+
     }
 
 
-    public static void updateFeedsFromPost(String username, String saveHandle) {
-        //FIXME create a table UNIQUE to every username
-        // when creating a new account and name it something related to that and use that table now.
-        // You want to find the user X's followings (via username given in the function) and update their feeds.
-        //FIXME
-        // This means you will have to implement three tables:
-        // [username]_followers
-        // [username]_followings
-        // [username]_feed
-        // and I want you to store only the saveHandles and types of the post in THAT (feed) table. The type
-        // is determined by the name of the function. Right now it's a "post"
+    public static void updateFeedsFromPost(String username, int ID) {
+
     }
 
-    public static void updateFeedsFromComment(String username, String saveHandle) {
-        //FIXME create a table UNIQUE to every username
-        // when creating a new account and name it something related to that and use that table now.
-        // You want to find the user X's followings (via username given in the function) and update their feeds.
-        //FIXME
-        // This means you will have to implement three tables:
-        // [username]_followers
-        // [username]_followings
-        // [username]_feed
-        // and I want you to store only the saveHandles and types of the post in THAT (feed) table. The type
-        // is determined by the name of the function. Right now it's a "post"
+    public static void updateFeedsFromComment(String username, int ID) {
+
+    }
+
+    public static void addToMessages(String directID, String sender, String originalSender, LocalDate now, String line) {
+
     }
 }

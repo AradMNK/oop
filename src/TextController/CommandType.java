@@ -21,6 +21,8 @@ public enum CommandType {
     STATS("stats"),
     DM("dm"),
 
+    UPDATE("update"),
+
     EXIT("exit"),
     NONE("none");
 
@@ -32,7 +34,8 @@ public enum CommandType {
     CommandType(String name){this.name = name;}
 
     static CommandType toCommandType(String string){
-        if (string.equals(LOGIN.name)) return LOGIN;
-        return NONE;
+        for (CommandType commandType: CommandType.values())
+            if (commandType.name.equals(string)) return commandType;
+        return CommandType.NONE;
     }
 }

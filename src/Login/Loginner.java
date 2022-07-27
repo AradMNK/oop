@@ -46,7 +46,7 @@ public class Loginner {
 
         if (worked){
             loginState = LoginState.getLoginState(user);
-            loginnedUser = UserBuilder.getUserFromDatabase(user);
+            loginnedUser = UserBuilder.getUserFromDatabaseFull(user);
             TextController.println("Successfully loginned as " + user);
         } else
             TextController.println("Could not match the credentials.");
@@ -63,6 +63,6 @@ public class Loginner {
             return;
         }
 
-        loginnedUser = UserBuilder.getUserFromDatabase(loginnedUser.getUsername());
+        loginnedUser = UserBuilder.getUserFromDatabaseFull(loginnedUser.getUsername());
     }
 }
