@@ -231,7 +231,7 @@ public class Loader {
         finally {
             Connector.connector.disconnect();
         }
-        return 0;
+        return 0;//
     }
 
     public static int getNumberOfLikeStats(String postID) {
