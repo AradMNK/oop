@@ -1,0 +1,31 @@
+package Objects;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+
+public class Post {
+    private SaveHandle postID;
+    private String description;
+    private Handle picture;
+    private LocalDate datePosted;
+    private User poster;
+
+    private final HashSet<Comment> comments = new HashSet<>();
+
+    public String getDescription() {return description;}
+    public void setDescription(String description) {this.description = description;}
+
+    public Handle getPicture() {return picture;}
+    public void setPicture(Handle picture) {this.picture = picture;}
+
+    public LocalDate getDatePosted() {return datePosted;}
+    public void setDatePosted(LocalDate datePosted) {this.datePosted = datePosted;}
+
+    public User getPoster(){return poster;}
+    public void setPoster(User poster){this.poster = poster;}
+
+    public SaveHandle getPostID() {return postID;}
+    public void setPostID(SaveHandle postID) {this.postID = postID;}
+
+    public HashSet<Comment> getComments() {return comments;}
+}
