@@ -22,13 +22,13 @@ public class FeedController {
     }
 
     public static void showMenu(User user){
-        if (!Database.Loader.userHasFeed(user.getUsername())) {
+        boolean hasPost = Database.Loader.userHasPostFeed(user.getUsername()),
+                hasComment = Database.Loader.userHasCommentFeed(user.getUsername());
+
+        if (!hasPost && !hasComment) {
             TextController.println("Your feed is empty, for now.");
             return;
         }
-
-        boolean hasPost = Database.Loader.userHasPostFeed(user.getUsername()),
-                hasComment = Database.Loader.userHasCommentFeed(user.getUsername());
 
         TextController.println("Please choose:");
         if (hasPost)  TextController.println("1. New posts from followings");
