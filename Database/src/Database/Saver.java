@@ -117,4 +117,9 @@ public class Saver {
     public static int createGroup(String ownerUsername) {
         return 0; //the new ID for group
     }
+
+    public static void addToGroupMessages(int handle, String sender, String originalSender,
+                                          LocalDateTime now, String content, int notReplyID) {
+
+    }
 }

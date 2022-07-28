@@ -1,6 +1,4 @@
 package TextController;
-
-import Builder.DirectMessengerBuilder;
 import Builder.GroupBuilder;
 import Login.LoginState;
 import Login.Loginner;
@@ -13,7 +11,6 @@ public class GroupController {
     final static int replyShowNum = 10, notReplyID = 0;
     final static String inReplyTo = "In reply to: ", ellipsis = "...";
     public static Group group;
-    public static boolean uBlocked, uBlocker;
 
     public static void attemptEntrance(Group g) {
         group = g;
@@ -45,13 +42,14 @@ public class GroupController {
 
     private static void enterChatMode() {
         String line;
-        TextController.println("You can leave with +" + GroupCommand.LEAVE + ".");
+        TextController.println("You can leave with +" + GroupCommand.EXIT + ".");
         while (true){
             line = TextController.getLine();
             if (actOnCommand(line)) break;
             else {
-                Database.Saver.addToMessages(group.getDirectID().getHandle(),
-                        group.getUser().getUsername(), group.getUser().getUsername(), LocalDateTime.now(), line, notReplyID);
+                Database.Saver.addToGroupMessages(group.getGroupID().getHandle(),
+                        Loginner.loginnedUser.getUsername(), Loginner.loginnedUser.getUsername(),
+                        LocalDateTime.now(), line, notReplyID);
             }
         }
     }
@@ -69,8 +67,9 @@ public class GroupController {
                 case FORWARD -> {try {forward(Integer.parseInt(split[1]), split[2]);} catch (NumberFormatException e) {e.printStackTrace();}}
 
                 case REFRESH -> refresh();
+                case LEAVE -> {leave(); return true;}
 
-                case LEAVE -> {return true;}
+                case EXIT -> {return true;}
                 default -> {}
             }
         }
@@ -79,17 +78,47 @@ public class GroupController {
         return false;
     }
 
-    private static void forward(int num, String username) {
+    private static void leave() {
+        if (Loginner.loginnedUser.getUsername().equals(group.getOwner().getUsername()))
+            Database.Changer.removeGroup(group.getGroupID().getHandle());
+
+    }
+
+    private static void forward(int num, String where) {
         final int size = group.getShownMessages().size();
         if (num > size){
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
+
+        if (where.startsWith("@"))
+            forwardToUser(where.substring(1), group.getShownMessages().get(num));
+        else
+            try {forwardToGroup(Integer.parseInt(where), group.getShownMessages().get(num));}
+            catch (NumberFormatException e){TextController.println
+                    ("Entered argument did not start with @ to send to a user and was also not a number to indicate groupID.");}
+    }
+    private static void forwardToGroup(int groupID, Message message) {
+        if (!Database.Loader.groupExists(groupID)){
+            TextController.println("No match for group ID \"" + groupID + "\"");
+            return;
+        }
+
+        Group group = GroupBuilder.getGroupFromDatabase(groupID);
+        if (!Loginner.loginnedUser.getGroups().contains(group)){
+            TextController.println("You are not part of this group!");
+            return;
+        }
+
+        Database.Saver.addToGroupMessages(groupID, Loginner.loginnedUser.getUsername(), message.getOriginalUsername(),
+                LocalDateTime.now(), message.getContent(), notReplyID);
+        TextController.println("Message forwarded to \"" + group.getName() + "\"");
+    }
+    private static void forwardToUser(String username, Message message) {
         if (!Database.Loader.usernameExists(username)){
             TextController.println("The username [@" + username + "] does not exist.");
             return;
         }
-
         if (Database.Loader.isUserBlocked(username, Loginner.loginnedUser.getUsername())){
             TextController.println("You can't forward a message to someone who has blocked you.");
             return;
@@ -99,11 +128,11 @@ public class GroupController {
         }
 
         Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
-                Loginner.loginnedUser.getUsername(), group.getShownMessages().get(num).getOriginalUsername(), LocalDateTime.now(),
-                group.getShownMessages().get(num).getContent(),notReplyID);
+                Loginner.loginnedUser.getUsername(), message.getOriginalUsername(), LocalDateTime.now(),
+                message.getContent(),notReplyID);
     }
-    private static void reply(int num) {
 
+    private static void reply(int num) {
         final int size = group.getShownMessages().size();
         if (num > size){
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
@@ -111,8 +140,9 @@ public class GroupController {
         }
 
         TextController.println("[" + getInReplyTo(num) + "]");
-        Database.Saver.addToMessages(group.getDirectID().getHandle(),
-                group.getUser().getUsername(), group.getUser().getUsername(), LocalDateTime.now(), TextController.getLine(), notReplyID);
+        Database.Saver.addToMessages(group.getGroupID().getHandle(),
+                Loginner.loginnedUser.getUsername(), Loginner.loginnedUser.getUsername(),
+                LocalDateTime.now(), TextController.getLine(), group.getShownMessages().get(num).getID().getHandle());
     }
     private static void edit(int num) {
         final int size = group.getShownMessages().size();
@@ -120,7 +150,7 @@ public class GroupController {
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
-        if (!group.getShownMessages().get(num).getOriginalUsername().equals(group.getUser().getUsername())){
+        if (!group.getShownMessages().get(num).getUsername().equals(Loginner.loginnedUser.getUsername())){
             TextController.println("You cannot edit another person's message!");
             return;
         }
@@ -135,7 +165,7 @@ public class GroupController {
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
-        if (!group.getShownMessages().get(num).getOriginalUsername().equals(group.getUser().getUsername())){
+        if (!group.getShownMessages().get(num).getUsername().equals(Loginner.loginnedUser.getUsername())){
             TextController.println("You cannot edit another person's message!");
             return;
         }
@@ -147,12 +177,8 @@ public class GroupController {
     }
 
     private static void refresh() {
-        group = DirectMessengerBuilder.getDirectMessengerFromDatabase(group.getUser(), group.getRecipient());
+        group = GroupBuilder.getGroupFromDatabaseFull(group.getGroupID().getHandle());
         showPreviousChats();
-
-        uBlocked = Database.Loader.isUserBlocked(group.getUser().getUsername(), group.getRecipient().getUsername());
-        uBlocker = Loginner.loginnedUser.getBlocklist().contains(group.getRecipient().getUsername());
-        blockMessage();
     }
 
     private static String getInReplyTo(int num){
@@ -200,10 +226,9 @@ enum GroupCommand{
     REFRESH("\\ref"),
     FORWARD("\\forward"),
     DELETE("\\del"),
-    LEAVE("/leave"),
+    LEAVE("\\leave"),
 
-    BLOCK("\\block"),
-    UNBLOCK("\\unblock"),
+    EXIT("/exit"),
 
     NONE("");
 

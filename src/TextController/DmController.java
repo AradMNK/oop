@@ -1,12 +1,13 @@
 package TextController;
 
 import Builder.DirectMessengerBuilder;
+import Builder.GroupBuilder;
 import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
+import Objects.Group;
 import Objects.Message;
 import Objects.DirectMessenger;
-import Objects.User;
 
 import java.time.LocalDateTime;
 
@@ -115,17 +116,41 @@ public class DmController {
         }
     }
 
-    private static void forward(int num, String username) {
+    private static void forward(int num, String where) {
         final int size = dm.getShownMessages().size();
         if (num > size){
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
+
+        if (where.startsWith("@"))
+            forwardToUser(where.substring(1), dm.getShownMessages().get(num));
+        else
+            try {forwardToGroup(Integer.parseInt(where), dm.getShownMessages().get(num));}
+            catch (NumberFormatException e){TextController.println
+                ("Entered argument did not start with @ to send to a user and was also not a number to indicate groupID.");}
+    }
+    private static void forwardToGroup(int groupID, Message message) {
+        if (!Database.Loader.groupExists(groupID)){
+            TextController.println("No match for group ID \"" + groupID + "\"");
+            return;
+        }
+
+        Group group = GroupBuilder.getGroupFromDatabase(groupID);
+        if (!Loginner.loginnedUser.getGroups().contains(group)){
+            TextController.println("You are not part of this group!");
+            return;
+        }
+
+        Database.Saver.addToGroupMessages(groupID, Loginner.loginnedUser.getUsername(), message.getOriginalUsername(),
+                LocalDateTime.now(), message.getContent(), notReplyID);
+        TextController.println("Message forwarded to \"" + group.getName() + "\"");
+    }
+    private static void forwardToUser(String username, Message message) {
         if (!Database.Loader.usernameExists(username)){
             TextController.println("The username [@" + username + "] does not exist.");
             return;
         }
-
         if (Database.Loader.isUserBlocked(username, Loginner.loginnedUser.getUsername())){
             TextController.println("You can't forward a message to someone who has blocked you.");
             return;
@@ -135,9 +160,10 @@ public class DmController {
         }
 
         Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
-                Loginner.loginnedUser.getUsername(), dm.getShownMessages().get(num).getOriginalUsername(), LocalDateTime.now(),
-                dm.getShownMessages().get(num).getContent(),notReplyID);
+                Loginner.loginnedUser.getUsername(), message.getOriginalUsername(), LocalDateTime.now(),
+                message.getContent(),notReplyID);
     }
+
     private static void reply(int num) {
         if (uBlocked || uBlocker) {blockMessage(); return;}
 
@@ -149,7 +175,8 @@ public class DmController {
 
         TextController.println("[" + getInReplyTo(num) + "]");
         Database.Saver.addToMessages(dm.getDirectID().getHandle(),
-                dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDateTime.now(), TextController.getLine(), notReplyID);
+                dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDateTime.now(), TextController.getLine(),
+                dm.getShownMessages().get(num).getID().getHandle());
     }
     private static void edit(int num) {
         final int size = dm.getShownMessages().size();
@@ -157,7 +184,7 @@ public class DmController {
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
-        if (!dm.getShownMessages().get(num).getOriginalUsername().equals(dm.getUser().getUsername())){
+        if (!dm.getShownMessages().get(num).getUsername().equals(dm.getUser().getUsername())){
             TextController.println("You cannot edit another person's message!");
             return;
         }
@@ -172,7 +199,7 @@ public class DmController {
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
-        if (!dm.getShownMessages().get(num).getOriginalUsername().equals(dm.getUser().getUsername())){
+        if (!dm.getShownMessages().get(num).getUsername().equals(dm.getUser().getUsername())){
             TextController.println("You cannot edit another person's message!");
             return;
         }

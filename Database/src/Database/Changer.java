@@ -37,4 +37,8 @@ public class Changer {
     public static void removeLike(int postID, String username) {
 
     }
+
+    public static void removeGroup(int groupID) {
+
+    }
 }

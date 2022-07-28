@@ -288,4 +288,8 @@ public class Loader {
     public static String getGroupMessageContent(int handle) {
         return "";
     }
+
+    public static boolean groupExists(int groupID) {
+        return true;
+    }
 }
