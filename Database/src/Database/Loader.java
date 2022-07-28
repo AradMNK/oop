@@ -266,7 +266,7 @@ public class Loader {
         return "reply was deleted";
     }
 
-    public static void isUserBlocked(String blocker, String blocked) {
-
+    public static boolean isUserBlocked(String blocker, String blocked) {
+        return false;
     }
 }
