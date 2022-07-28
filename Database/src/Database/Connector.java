@@ -9,7 +9,7 @@ public class Connector{
     static Connector connector = new Connector();
 
     // init database constants
-    private static final String DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/database?useSSL=false";
+    private static final String DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/database?allowPublicKeyRetrieval=true&useSSL=false";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "System.Recreate1";
     private static final String MAX_POOL = "250";

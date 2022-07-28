@@ -265,4 +265,8 @@ public class Loader {
         //FIXME if theres no handle return "reply was deleted"
         return "reply was deleted";
     }
+
+    public static void isUserBlocked(String blocker, String blocked) {
+
+    }
 }

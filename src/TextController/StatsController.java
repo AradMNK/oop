@@ -23,7 +23,7 @@ public class StatsController {
             return;
         }
 
-        TextController.println("Today's views on your account: " + Database.Loader.getViews(Loginner.loginnedUser.getUsername()));
+        //TextController.println("Today's views on your account: " + Database.Loader.getViews(Loginner.loginnedUser.getUsername()));
     }
 
     private static void showForPostID(int postID) {

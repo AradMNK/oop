@@ -2,7 +2,7 @@ package Objects;
 
 import java.time.LocalDate;
 
-public class DirectMessage {
+public class Message {
     private SaveHandle ID, replyToID;
     private String content;
     private String username, userName, originalUsername;

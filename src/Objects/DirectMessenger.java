@@ -13,7 +13,7 @@ public class DirectMessenger {
 
     public DirectMessenger(){}
 
-    private final ArrayList<DirectMessage> ShownMessages = new ArrayList<>();
+    private final ArrayList<Message> ShownMessages = new ArrayList<>();
 
     public SaveHandle getDirectID() {return directID;}
     public void setDirectID(SaveHandle directID) {this.directID = directID;}
@@ -25,5 +25,5 @@ public class DirectMessenger {
     public User getUser() {return user;}
     public void setUser(User user) {this.user = user;}
 
-    public ArrayList<DirectMessage> getShownMessages() {return ShownMessages;}
+    public ArrayList<Message> getShownMessages() {return ShownMessages;}
 }

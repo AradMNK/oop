@@ -25,4 +25,8 @@ public class Changer {
     public static void deleteMessage(int handle) {
 
     }
+
+    public static void removeFromBlockList(String blocker, String blocked) {
+
+    }
 }

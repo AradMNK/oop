@@ -4,7 +4,7 @@ import Builder.DirectMessengerBuilder;
 import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
-import Objects.DirectMessage;
+import Objects.Message;
 import Objects.DirectMessenger;
 
 import java.time.LocalDate;
@@ -36,23 +36,23 @@ public class DmController {
     }
 
     private static void showPreviousChats() {
-        for (DirectMessage directMessage : dm.getShownMessages()) {
-            if (directMessage.getReplyToID().getHandle() != 0) { //it's a replied message
-                String repliedMessage = Database.Loader.getDirectMessageContent(directMessage.getReplyToID().getHandle());
+        for (Message message : dm.getShownMessages()) {
+            if (message.getReplyToID().getHandle() != 0) { //it's a replied message
+                String repliedMessage = Database.Loader.getDirectMessageContent(message.getReplyToID().getHandle());
                 TextController.print("[" + getInReplyTo(repliedMessage) + "] ");
-                TextController.println(getMessage(directMessage));
+                TextController.println(getMessage(message));
             }
-            else if (directMessage.getOriginalUsername().equals(dm.getUser().getUsername())){ //it's normal message
-                TextController.println(getMessage(directMessage));
+            else if (message.getOriginalUsername().equals(dm.getUser().getUsername())){ //it's normal message
+                TextController.println(getMessage(message));
             } else { //it's a forwarded message
-                TextController.print("[Forwarded from @" + directMessage.getOriginalUsername() + "] ");
-                TextController.println(getMessage(directMessage));
+                TextController.print("[Forwarded from @" + message.getOriginalUsername() + "] ");
+                TextController.println(getMessage(message));
             }
         }
     }
 
-    private static String getMessage(DirectMessage directMessage) {
-        return ("(" + directMessage.getDate() + ") " + directMessage.getUserName() + " :" + directMessage.getContent());
+    private static String getMessage(Message message) {
+        return ("(" + message.getDate() + ") " + message.getUserName() + " :" + message.getContent());
     }
 
     private static void enterChatMode() {
@@ -136,8 +136,8 @@ public class DmController {
             return;
         }
 
-        DirectMessage directMessage = dm.getShownMessages().get(num);
-        Database.Changer.editMessage(directMessage.getID().getHandle(), TextController.getLine());
+        Message message = dm.getShownMessages().get(num);
+        Database.Changer.editMessage(message.getID().getHandle(), TextController.getLine());
         TextController.println("SYSTEM: Successfully edited your message.");
     }
 
@@ -152,21 +152,21 @@ public class DmController {
             return;
         }
 
-        DirectMessage directMessage = dm.getShownMessages().get(num);
-        Database.Changer.deleteMessage(directMessage.getID().getHandle());
+        Message message = dm.getShownMessages().get(num);
+        Database.Changer.deleteMessage(message.getID().getHandle());
         TextController.println("SYSTEM: Successfully deleted your message. Reloading chat: ");
         refresh();
+
     }
 
 
 
     private static String getInReplyTo(int num){
-        DirectMessage directMessage = dm.getShownMessages().get(num);
-        String out = (directMessage.getContent().length() > replyShowNum + ellipsis.length()) ?
-                directMessage.getContent().substring(0, replyShowNum) + ellipsis : directMessage.getContent();
+        Message message = dm.getShownMessages().get(num);
+        String out = (message.getContent().length() > replyShowNum + ellipsis.length()) ?
+                message.getContent().substring(0, replyShowNum) + ellipsis : message.getContent();
         return inReplyTo + "[" + out + "]";
     }
-
     private static String getInReplyTo(String msg){
         String out = (msg.length() > replyShowNum + ellipsis.length()) ?
                 msg.substring(0, replyShowNum) + ellipsis : msg;
@@ -181,6 +181,9 @@ enum DmCommand{
     FORWARD("\\forward"),
     DELETE("\\del"),
     LEAVE("/leave"),
+
+    BLOCK("\\block"),
+    UNBLOCK("\\unblock"),
 
     NONE("");
 
