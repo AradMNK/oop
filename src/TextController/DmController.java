@@ -83,8 +83,6 @@ public class DmController {
         DmCommand dmCommand = DmCommand.toDmCommand(split[0]);
         try {
             switch (dmCommand) {
-                case NONE -> TextController.println("SYSTEM: Why are you typing nothing? What is your problem?");
-
                 case EDIT -> {try {edit(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case DELETE -> {try {delete(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}

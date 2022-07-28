@@ -60,8 +60,6 @@ public class GroupController {
         GroupCommand groupCommand = GroupCommand.toGroupCommand(split[0]);
         try {
             switch (groupCommand) {
-                case NONE -> TextController.println("SYSTEM: Why are you typing nothing? What is your problem?");
-
                 case EDIT -> {try {edit(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case DELETE -> {try {delete(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
@@ -85,6 +83,16 @@ public class GroupController {
     }
 
     private static void revoke(String id) {
+        if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
+            TextController.println("You are not the group owner to be allowed to do this.");
+            return;
+        }
+
+        if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
+            TextController.println("Joining ID already exists. Please choose a new one.");
+            return;
+        }
+
         Database.Changer.changeGroupJoiner(id);
     }
 

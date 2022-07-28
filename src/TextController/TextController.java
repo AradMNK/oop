@@ -67,7 +67,8 @@ public class TextController {
         TextController.println("Please enter a joining ID for inviting people.");
         group.setGroupJoiner(TextController.getLine());
         if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
-            TextController.println("Joining ID already exists. Please choose a new one.");
+            TextController.println("Joining ID already exists. Please choose a new one. Aborting command /"
+                    + CommandType.NEW_GROUP);
             return;
         }
         group.setGroupID(new SaveHandle(Database.Saver.createGroup
