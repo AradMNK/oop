@@ -41,4 +41,8 @@ public class Changer {
     public static void removeGroup(int groupID) {
 
     }
+
+    public static void removeLikeFromFeed(String username, int handle) {
+
+    }
 }

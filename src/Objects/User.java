@@ -65,9 +65,9 @@ public class User {
     public boolean like(int postID){
         if (Database.Loader.isPostLiked(postID, this.username)) return false;
 
-        int handle = Database.Saver.addToLikes(postID, this.username);
+        Database.Saver.addToLikes(postID, this.username);
         for (String usernames: followers)
-            Database.Saver.updateFeedsFromLike(usernames, handle);
+            Database.Saver.updateFeedsFromLike(usernames, postID);
         return true;
     }
     public boolean unlike(int postID){

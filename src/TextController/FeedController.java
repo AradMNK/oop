@@ -54,6 +54,7 @@ public class FeedController {
         for (Map.Entry<Post, Integer> entry : user.getFeed().getLikers().entrySet()){
             TextController.println("[" + entry.getKey().getPostID() + "] (" + ellipsis(entry.getKey().getDescription())
                     + "): " + entry.getValue() + " likes");
+            Database.Changer.removeLikeFromFeed(user.getUsername(), entry.getKey().getPostID().getHandle());
         }
     }
 

@@ -55,23 +55,6 @@ public class TextController {
         }
     }
 
-    private static void unlike(String postIDasString) {
-        if (Loginner.loginState == LoginState.SIGN_OUT){
-            println("Please login first to like a post.");
-            return;
-        }
-
-        int postID;
-        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
-
-        if (!Database.Loader.postIdExists(postID)) {
-            println("PostID \"" + postID + "\" does not exist.");
-            return;
-        }
-
-        if (!Loginner.loginnedUser.unlike(postID)) println("You did not like this post in the first place.");
-    }
-
     private static void newGroup() {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             TextController.println("Please login before trying to create a group chat.");
@@ -126,7 +109,7 @@ public class TextController {
     }
     private static void likes(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
-            println("Please login first to like a post.");
+            println("Please login first to see likes.");
             return;
         }
         int postID;
@@ -139,6 +122,7 @@ public class TextController {
 
         println("Total likes on your post [" + postID + "] is: " + Database.Loader.getNumberOfLikes(postID));
     }
+
     private static void like(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
@@ -158,6 +142,22 @@ public class TextController {
             return;
         }
         if (Database.Loader.postIsAd(postID)) Database.Changer.addLikeStat(postID, Loginner.loginnedUser.getUsername());
+    }
+    private static void unlike(String postIDasString) {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            println("Please login first to like a post.");
+            return;
+        }
+
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
+
+        if (!Database.Loader.postIdExists(postID)) {
+            println("PostID \"" + postID + "\" does not exist.");
+            return;
+        }
+
+        if (!Loginner.loginnedUser.unlike(postID)) println("You did not like this post in the first place.");
     }
 
     private static void follow(String username) {
