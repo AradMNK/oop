@@ -8,25 +8,25 @@ public class UserBuilder {
     }
 
     public static User getUserFromDatabaseFull(String username){
-        //FIXME you want to implement the others, then set the user posts and feed and etc. to them while building the user
+        //FIXME this has EVERYTHING but the pointers to other things are limited
 
         return new User();
     }
 
     public static User getUserFromDatabaseDetailsOnly(String username){
-        //FIXME you want to implement the others, then set the user posts and feed and etc. to them while building the user
+        //FIXME this only has details
 
         return new User();
     }
 
     public static User getUserFromDatabaseWithPosts(String username){
-        //FIXME you want to implement the others, then set the user posts and feed and etc. to them while building the user
+        //FIXME this only has posts and username
 
         return new User();
     }
 
     public static User getUserFromDatabaseWithFollowers(String username){
-        //FIXME you want to implement the others, then set the user posts and feed and etc. to them while building the user
+        //FIXME this only has username and followers
 
         return new User();
     }

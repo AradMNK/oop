@@ -8,19 +8,21 @@ public enum CommandType {
     SIGNOUT("signout"),
 
     DETAILS("details"),
+    FEED("feed"),
+    STATS("stats"),
+
     POST("post"),
-    POSTS("posts"),
     COMMENT("comment"),
     LIKE("like"),
     UNLIKE("unlike"),
-    LIKES("likes"),
-    LIKERS("likers"),
-    FEED("feed"),
     FOLLOW("follow"),
     UNFOLLOW("unfollow"),
+
+    LIKES("likes"),
+    LIKERS("likers"),
+    POSTS("posts"),
     FOLLOWERS("followers"),
     FOLLOWINGS("followings"),
-    STATS("stats"),
 
     DM("dm"),
     BLOCK("block"),
@@ -29,6 +31,10 @@ public enum CommandType {
     GROUPS("groups"),
     NEW_GROUP("newgroup"),
 
+    RECOMMEND_USER("recommend_user"),
+    RECOMMEND_AD("ad"),
+
+    HELP("help"),
     EXIT("exit"),
     NONE("none");
 

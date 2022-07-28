@@ -6,6 +6,7 @@ import Login.Loginner;
 import Objects.Group;
 import Objects.SaveHandle;
 import Objects.UserType;
+import Recommender.UserRecommender;
 
 import java.util.Scanner;
 
@@ -47,12 +48,32 @@ public class TextController {
 
             case GROUPS -> GroupController.showGroups();
             case NEW_GROUP -> newGroup();
+            case RECOMMEND_USER -> recommendUser();
 
+            case HELP -> writeHelp();
             case EXIT -> println("Paradoxical");
             case NONE -> println("You have typed in /" + CommandType.NONE + "! This command does nothing you idiot!");
 
             default -> println("No match for command /" + command.getCommandType());
         }
+    }
+
+    private static void recommendUser() {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            TextController.println("Please login before trying to get recommended users for you.");
+            return;
+        }
+
+        String[] recommendedUsers = UserRecommender.recommendUser();
+
+        println("The top " + recommendedUsers.length + " usernames for you are (in order):");
+        for (String username: recommendedUsers) {
+            println("[@" + username + "]");
+        }
+    }
+
+    private static void writeHelp() {
+        println("hi");
     }
 
     private static void newGroup() {
@@ -197,7 +218,15 @@ public class TextController {
     }
 
     public static void inputCommand(){
-        Command command = new Command(getLine());
+        Command command;
+        try{command = new Command(getLine());}
+        catch (CommandException e){
+            TextController.println("What you just typed in was not defined." +
+                "\nUse /" + CommandType.HELP + " to see the available commands.");
+            inputCommand();
+            return;
+        }
+
 
         while (!command.getCommandType().equals(CommandType.EXIT)){
             actOnCommand(command);

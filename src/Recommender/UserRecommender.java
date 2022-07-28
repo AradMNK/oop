@@ -3,7 +3,6 @@ package Recommender;
 import Builder.UserBuilder;
 import Login.Loginner;
 import Objects.User;
-
 import java.util.*;
 
 public class UserRecommender {
@@ -39,6 +38,7 @@ public class UserRecommender {
         ArrayList<User> sortedList = new ArrayList<>(stringListCopy);
         sortedList.sort(Comparator.comparing(user -> scores[stringListCopy.indexOf(user)]));
 
-        return (String[]) Arrays.copyOfRange(sortedList.toArray(), 0, NUMBER_OF_RECOMMENDED_USERS);
+        return (String[]) Arrays.copyOfRange(sortedList.toArray(),
+                0, Math.min(sortedList.size(), NUMBER_OF_RECOMMENDED_USERS));
     }
 }

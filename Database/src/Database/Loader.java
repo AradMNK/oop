@@ -41,9 +41,7 @@ public class Loader {
             existUsername = resultSet.getString(1);
 
             //checks if the username exists
-            if (username.equals(existUsername)){
-                return true;
-            }
+            if (username.equals(existUsername)) return true;
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}

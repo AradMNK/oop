@@ -11,8 +11,10 @@ public class Connector{
     // init database constants
     private static final String DATABASE_URL = "jdbc:mysql://127.0.0.1:3306/database?allowPublicKeyRetrieval=true&useSSL=false";
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "System.Recreate1";
     private static final String MAX_POOL = "250";
+
+    private static String PASSWORD = "";
+    public static void setPass(String pass) {PASSWORD = pass;}
 
     // init connection object
     private Connection connection;
@@ -32,14 +34,21 @@ public class Connector{
 
     // connect database
     public Connection connect() {
-        if (connection == null) {
-            try {
-                connection = DriverManager.getConnection(DATABASE_URL, getProperties());
-            } catch ( SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        if (connection == null)
+            try {connection = DriverManager.getConnection(DATABASE_URL, getProperties());}
+            catch ( SQLException e) {e.printStackTrace();}
         return connection;
+    }
+
+    public static boolean checkConnection(){
+        Connector connector = new Connector();
+        boolean res;
+        try {connector.connection = DriverManager.getConnection(DATABASE_URL, connector.getProperties()); res = true;}
+        catch ( SQLException e) {res = false;}
+        finally {
+            try {connector.connection.close();} catch (SQLException e) {e.printStackTrace();}
+            connector.connection = null;}
+        return res;
     }
 
     // disconnect database
