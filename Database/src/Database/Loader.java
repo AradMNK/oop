@@ -3,6 +3,7 @@ package Database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 
 public class Loader {
     public static boolean loginMatch(String username, String hashPass){
@@ -295,5 +296,9 @@ public class Loader {
 
     public static String getPostPoster(int postID) {
         return ""; //Poster username FIXME
+    }
+
+    public static HashSet<Integer> getLikedAds(String username) {
+        return new HashSet<>();
     }
 }

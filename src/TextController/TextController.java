@@ -1,11 +1,14 @@
 package TextController;
 
+import Builder.PostBuilder;
 import Login.Creator;
 import Login.LoginState;
 import Login.Loginner;
 import Objects.Group;
+import Objects.Post;
 import Objects.SaveHandle;
 import Objects.UserType;
+import Recommender.AdRecommender;
 import Recommender.UserRecommender;
 
 import java.util.Scanner;
@@ -50,6 +53,7 @@ public class TextController {
             case GROUPS -> GroupController.showGroups();
             case NEW_GROUP -> newGroup();
             case RECOMMEND_USER -> recommendUser();
+            case RECOMMEND_AD -> recommendAd();
 
             case HELP -> writeHelp();
             case EXIT -> println("Paradoxical");
@@ -140,6 +144,24 @@ public class TextController {
         println("The top " + recommendedUsers.length + " usernames for you are (in order):");
         for (String username: recommendedUsers) {
             println("[@" + username + "]");
+        }
+    }
+    private static void recommendAd() {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            TextController.println("Please login before trying to get recommended ads for you.");
+            return;
+        }
+
+        Integer[] recommendedAds = AdRecommender.recommendAd();
+
+        println("The top " + recommendedAds.length + " posts for you are (in order):");
+        for (int postID: recommendedAds) {
+            Post post = PostBuilder.getPostFromDatabase(postID);
+            TextController.print("** AD **");
+            TextController.println("(" + post.getDatePosted() + ") "
+                    + post.getPoster().getName() + "[@" + post.getPoster().getUsername() + "]:" );
+            TextController.println(post.getDescription());
+            TextController.println("postID: \"" + post.getPostID() + "\"");
         }
     }
 

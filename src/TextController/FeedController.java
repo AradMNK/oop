@@ -87,7 +87,7 @@ public class FeedController {
         TextController.println("(" + post.getDatePosted() + ") "
                 + post.getPoster().getName() + "[@" + post.getPoster().getUsername() + "]:" );
         TextController.println(post.getDescription());
-        TextController.println("postid: " + post.getPostID());
+        TextController.println("postid: " + post.getPostID() + "\"");
     }
 
     private static void writeComment(Comment comment) {

@@ -54,6 +54,7 @@ public class Creator {
         Loginner.loginnedUser.setName(name);
         Loginner.loginState = LoginState.SIGN_IN;
 
+        TextController.getLine();
         TextController.println("Successfully created user.");
     }
 }
