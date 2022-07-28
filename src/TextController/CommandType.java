@@ -12,18 +12,22 @@ public enum CommandType {
     POSTS("posts"),
     COMMENT("comment"),
     LIKE("like"),
+    UNLIKE("unlike"),
     LIKES("likes"),
     LIKERS("likers"),
     FEED("feed"),
     FOLLOW("follow"),
+    UNFOLLOW("unfollow"),
     FOLLOWERS("followers"),
     FOLLOWINGS("followings"),
     STATS("stats"),
+
     DM("dm"),
     BLOCK("block"),
     UNBLOCK("unblock"),
 
-    UPDATE("update"),
+    GROUPS("groups"),
+    NEW_GROUP("newgroup"),
 
     EXIT("exit"),
     NONE("none");

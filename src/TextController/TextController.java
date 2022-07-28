@@ -25,23 +25,53 @@ public class TextController {
             case POSTS -> Display.accountPosts(command.getArgs());
             case POST -> PostController.newPost();
             case COMMENT -> CommentController.newComment(command.getArgs()[0]);
+
             case LIKE -> like(command.getArgs()[0]);
+            case UNLIKE -> unlike(command.getArgs()[0]);
+
             case LIKES -> likes(command.getArgs()[0]);
             case LIKERS -> likers(command.getArgs()[0]);
+
             case FEED -> FeedController.show();
             case FOLLOW -> follow(command.getArgs()[0]);
+            case UNFOLLOW -> unfollow(command.getArgs()[0]);
             case FOLLOWERS -> Display.followers(command.getArgs());
             case FOLLOWINGS -> Display.followings(command.getArgs());
             case STATS -> StatsController.show(command.getArgs());
+
             case DM -> DmController.attemptEntrance(command.getArgs()[0]);
             case BLOCK -> block(command.getArgs()[0]);
             case UNBLOCK -> unblock(command.getArgs()[0]);
+
+            case GROUPS -> GroupController.showGroups();
+            case NEW_GROUP -> newGroup();
 
             case EXIT -> println("Paradoxical");
             case NONE -> println("You have typed in /" + CommandType.NONE + "! This command does nothing you idiot!");
 
             default -> println("No match for command /" + command.getCommandType());
         }
+    }
+
+    private static void unlike(String postIDasString) {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            println("Please login first to like a post.");
+            return;
+        }
+
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
+
+        if (!Database.Loader.postIdExists(postID)) {
+            println("PostID \"" + postID + "\" does not exist.");
+            return;
+        }
+
+        if (!Loginner.loginnedUser.unlike(postID)) println("You did not like this post in the first place.");
+    }
+
+    private static void newGroup() {
+
     }
 
     private static void unblock(String username) {
@@ -52,7 +82,6 @@ public class TextController {
 
         Loginner.loginnedUser.unblock(username);
     }
-
     private static void block(String username) {
         if (Loginner.loginnedUser.getBlocklist().contains(username)){
             TextController.println("The user [@" + username + "] was already in your blocklist.");
@@ -83,7 +112,6 @@ public class TextController {
 
         Display.writeUsers(Database.Loader.getLikerUsernames(postID));
     }
-
     private static void likes(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
@@ -99,7 +127,6 @@ public class TextController {
 
         println("Total likes on your post [" + postID + "] is: " + Database.Loader.getNumberOfLikes(postID));
     }
-
     private static void like(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
@@ -114,7 +141,10 @@ public class TextController {
             return;
         }
 
-        Loginner.loginnedUser.like(postID);
+        if (!Loginner.loginnedUser.like(postID)){
+            println("You have already liked this post.");
+            return;
+        }
         if (Database.Loader.postIsAd(postID)) Database.Changer.addLikeStat(postID, Loginner.loginnedUser.getUsername());
     }
 
@@ -129,7 +159,21 @@ public class TextController {
             return;
         }
 
-        Database.Saver.addToFollowers(Loginner.loginnedUser.getUsername(), username);
+        if (!Loginner.loginnedUser.follow(username)) println("You already follow [@" + username + "].");
+    }
+
+    private static void unfollow(String username) {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            println("Please login first before trying to unfollow anyone.");
+            return;
+        }
+
+        if (!Database.Loader.usernameExists(username)){
+            println("Username \"@" + username + "\" does not exist.");
+            return;
+        }
+
+        if (!Loginner.loginnedUser.unfollow(username)) println("You don't follow [@" + username + "] anyway.");
     }
 
     public static void inputCommand(){

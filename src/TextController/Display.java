@@ -88,8 +88,8 @@ public class Display {
         }
         else user = Loginner.loginnedUser;
 
-        for (User flw: user.getFollowers())
-            TextController.println(flw.getName() + " [@" + flw.getUsername() + "]");
+        for (String flw: user.getFollowers())
+            TextController.println("[@" + flw + "]");
     }
 
     public static void followings(String[] args) {
@@ -110,8 +110,8 @@ public class Display {
         }
         else user = Loginner.loginnedUser;
 
-        for (User flw: user.getFollowings())
-            TextController.println(flw.getName() + " [@" + flw.getUsername() + "]");
+        for (String flw: user.getFollowings())
+            TextController.println(" [@" + flw + "]");
     }
 
     public static void writeUsers(String[] usernames){
