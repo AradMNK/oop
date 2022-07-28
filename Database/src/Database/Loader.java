@@ -11,78 +11,112 @@ public class Loader {
         String loginUsername;
         String loginPassword;
 
-        //declares a boolean for match, it's false by default in case no results is found or the password isn't true
-        boolean match = false;
-
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
-            resultSet = connection.prepareStatement("SELECT username, hashPass FROM users WHERE username = " + username + ";").executeQuery();
+            resultSet = connection.prepareStatement("SELECT username, hashPass FROM users WHERE username = '" + username + "';").executeQuery();
             resultSet.next();
             loginUsername = resultSet.getString(1);
             loginPassword = resultSet.getString(2);
 
             //checks if the password is the same
-            if (username.equals(loginUsername)){
-                if (hashPass.equals(loginPassword)){
-                    match = true;
-                }
-            }
+            if (username.equals(loginUsername))
+                if (hashPass.equals(loginPassword))
+                    return true;
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        return match;
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
     public static boolean usernameExists(String username){//this checks if the username exists in the "login" table
         //declares the username found in the results
         String existUsername;
 
-        //declares a boolean for existence, it's false by default in case no results is found or the password isn't true
-        boolean exists = false;
-
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
-            resultSet = connection.prepareStatement("SELECT username, hashPass FROM users WHERE username = " + username + ";").executeQuery();
+            resultSet = connection.prepareStatement("SELECT username FROM users WHERE username = '" + username + "';").executeQuery();
             resultSet.next();
             existUsername = resultSet.getString(1);
 
             //checks if the username exists
             if (username.equals(existUsername)){
-                exists = true;
+                return true;
             }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        return exists;
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
     public static boolean userHasCommentFeed(String username) {
-        //FIXME
-        return true;
+        //declares the username found in the result set
+        String foundUsername;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT username FROM feed WHERE username = '" + username +"' AND type = 'comment'").executeQuery();
+            resultSet.next();
+            foundUsername = resultSet.getString(1);
+
+            //checks if there are results
+            if (username.equals(foundUsername)){
+                return true;
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
+    }
+
+    public static boolean userHasLikeFeed(String username) {
+        //declares the username found in the result set
+        String foundUsername;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT username FROM feed WHERE username = '" + username +"' AND type = 'like'").executeQuery();
+            resultSet.next();
+            foundUsername = resultSet.getString(1);
+
+            //checks if there are results
+            if (username.equals(foundUsername)){
+                return true;
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
     public static boolean userHasPostFeed(String username) {
-        //FIXME
-        return true;
+        //declares the username found in the result set
+        String foundUsername;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT username FROM feed WHERE username = '" + username +"' AND type = 'post'").executeQuery();
+            resultSet.next();
+            foundUsername = resultSet.getString(1);
+
+            //checks if there are results
+            if (username.equals(foundUsername)){
+                return true;
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
     public static boolean postIdExists(int postID) {
 
         //declares the postID found in the results
         int existPostID;
-
-        //declares a boolean for existence, it's false by default in case no results is found or the password isn't true
-        boolean exists = false;
 
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
@@ -92,17 +126,12 @@ public class Loader {
             existPostID = resultSet.getInt(1);
 
             //checks if the postID exists
-            if (postID == existPostID){
-                exists = true;
-            }
+            if (postID == existPostID)
+                return true;
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        return exists;
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
     public static int getNumberOfLikes(int postID) {
@@ -117,12 +146,8 @@ public class Loader {
 
             numberOfLikes = Integer.parseInt(resultSet.getString(1));
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
         return numberOfLikes;
     }
 
@@ -144,18 +169,14 @@ public class Loader {
 
             //declares the array and gets the usernames
             likerUsernames = new String[numberOfLikes];
-            resultSet = connection.prepareStatement("SELECT likerUsername FROM likes WHERE postID = " + postID + ":").executeQuery();
+            resultSet = connection.prepareStatement("SELECT username FROM likes WHERE postID = " + postID + ":").executeQuery();
             resultSet.next();
             for (int i = 0; i < numberOfLikes; i++){
                 likerUsernames[i] = resultSet.getString(1);
             }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
         return likerUsernames;
     }
 
@@ -166,17 +187,12 @@ public class Loader {
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
-            resultSet = connection.prepareStatement("SELECT name FROM users WHERE username = " + username + ";").executeQuery();
+            resultSet = connection.prepareStatement("SELECT name FROM users WHERE username = '" + username + "';").executeQuery();
             resultSet.next();
             name = resultSet.getString(1);
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        //a user's name is different to its username. username is like @aradmnk but my name is Arad Mahdinejad
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
         return name;
     }
 
@@ -184,53 +200,54 @@ public class Loader {
         //declares the type
         String typeOfPost;
 
-        //declares a boolean
-        boolean ad = false;
-
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT type FROM posts WHERE postID = " + postID + ";").executeQuery();
             resultSet.next();
             typeOfPost = resultSet.getString(1);
-            if (typeOfPost.equals("business")){
-                ad = true;
-            }
+            if (typeOfPost.equals("business"))
+                return true;
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        return ad;
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 
-    public static int getViews(String username) {
-        //FIXME i have already checked that the username is a business user. just go and check
-        //declares the number of views
-        int views = 0;
-
+    public static int getViews(int postID) {
+        //i have already checked that the username is a business user. just go and check
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
-            resultSet = connection.prepareStatement("").executeQuery();
+            resultSet = connection.prepareStatement("SELECT DISTINCT username FROM views WHERE postID = " + postID +";").executeQuery();
             resultSet.next();
 
-
+            //counts the rows of the
+            if (resultSet.last()) {
+                return resultSet.getRow();
+            }
         }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
-        return 0;//
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return 0;
     }
 
     public static int getNumberOfLikeStats(int postID) {
-        //FIXME i have checked that the user is business. you don't have to.
-        // Also, this is the likestat; not the normal likes on a post (this is today's number of likes)
+        //i have checked that the user is business. you don't have to.
+        //Also, this is the likestat; not the normal likes on a post (this is today's number of likes)
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT DISTINCT username FROM likestat WHERE postID = " + postID +";").executeQuery();
+            resultSet.next();
+
+            //counts the rows of the
+            if (resultSet.last()) {
+                return resultSet.getRow();
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
         return 0;
     }
 
@@ -242,5 +259,10 @@ public class Loader {
     public static int getDirectID(String username1, String username2) {
 
         return 0;
+    }
+
+    public static String getDirectMessageContent (int handle){
+        //FIXME if theres no handle return "reply was deleted"
+        return "reply was deleted";
     }
 }
