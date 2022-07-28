@@ -72,21 +72,8 @@ public class Saver {
         Connector.queryWithoutResult("INSERT INTO follow (follower, followed) VALUES ('" + usernameFollower + "', '" + usernameFollowed + "');");
     }
 
-    public static int addToLikes(int postID, String username) {
-        //adds the like to the likes
+    public static void addToLikes(int postID, String username) {
         Connector.queryWithoutResult("INSERT INTO likes (postID, username) VALUES (" + postID + ", '" + username + "');");
-
-        //gets the handle
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            resultSet = connection.prepareStatement("SELECT likeID FROM likes ORDER BY likeID DESC;").executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
-        return 0;
     }
 
     public static void updateFeedsFromLike(String username, int ID) {

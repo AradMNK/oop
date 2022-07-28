@@ -9,15 +9,13 @@ public class Changer {
         Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + commentID + " AND type = cpmment;");
     }
 
-    public static void removeLikeFromFeed(String username, int postID) {
-        //FIXME
-        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + postID + " AND type = like;");
+    public static void removeLikeFromFeed(String username, int handle) {
+        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + handle + " AND type = like;");
     }
 
-    public static void addViewForUser(String username) {
-        //FIXME for business users.
-        // Create a new  table for every single business user and name it something and store views in it
-        // if possible, make the database remove the contents every day. idk if it can. and if it couldn't, just forget it
+    public static void addViewForUser(int postID, String username) {
+        //FIXME if possible, make the database remove the contents every day. idk if it can. and if it couldn't, just forget it
+        Connector.queryWithoutResult("INSERT INTO views (username, postID) VALUES ('" + username + "', " + postID + ");");
     }
     public static void addLikeStat(int postID, String username) {
         //FIXME same here
@@ -44,10 +42,6 @@ public class Changer {
     }
 
     public static void removeGroup(int groupID) {
-
-    }
-
-    public static void removeFromGroups (String username, int groupID){
 
     }
 }
