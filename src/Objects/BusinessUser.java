@@ -7,7 +7,11 @@ public class BusinessUser extends User {
     public UserType getUserType(){return UserType.BUSINESS;}
 
     public void addViewToAccount() {
-        Database.Changer.addViewForUser(this.getUsername());
+        for (Post post: getPosts()) Database.Changer.addViewForUser(this.getUsername(), post.getPostID().getHandle());
+    }
+
+    public void addViewToAccount(Post post) {
+        Database.Changer.addViewForUser(this.getUsername(), post.getPostID().getHandle());
     }
 
     //new methods

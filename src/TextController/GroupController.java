@@ -228,6 +228,7 @@ enum GroupCommand{
     REFRESH("\\ref"),
     FORWARD("\\forward"),
     DELETE("\\del"),
+    BAN("\\ban"),
     LEAVE("\\leave"),
 
     EXIT("/exit"),
