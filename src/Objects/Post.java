@@ -10,6 +10,14 @@ public class Post {
     private LocalDateTime datePosted;
     private User poster;
 
+    public Post(){}
+    public Post(int postID, String description, LocalDateTime datePosted, User poster){
+        this.postID = new SaveHandle(postID);
+        this.description = description;
+        this.datePosted = datePosted;
+        this.poster = poster;
+    }
+
     private final HashSet<Comment> comments = new HashSet<>();
 
     public String getDescription() {return description;}

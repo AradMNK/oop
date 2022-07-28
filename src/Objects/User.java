@@ -10,8 +10,7 @@ public class User {
     private Feed feed;
     private final HashSet<DirectMessenger> dms = new HashSet<>();
     private final HashSet<Post> posts = new HashSet<>();
-    private final HashSet<String> blocklist = new HashSet<>();
-    private final HashSet<User> followers = new HashSet<>(), followings = new HashSet<>();
+    private final HashSet<String> blocklist = new HashSet<>(), followers = new HashSet<>(), followings = new HashSet<>();
     private final HashSet<Group> groups = new HashSet<>();
     private LocalDate dateJoined;
 
@@ -36,8 +35,8 @@ public class User {
     public HashSet<DirectMessenger> getDms() {return dms;}
     public HashSet<Post> getPosts() {return posts;}
     public HashSet<String> getBlocklist() {return blocklist;}
-    public HashSet<User> getFollowers() {return followers;}
-    public HashSet<User> getFollowings() {return followings;}
+    public HashSet<String> getFollowers() {return followers;}
+    public HashSet<String> getFollowings() {return followings;}
     public HashSet<Group> getGroups() {return groups;}
 
     public LocalDate getDateJoined() {return dateJoined;}
@@ -49,30 +48,62 @@ public class User {
     public UserType getUserType(){return UserType.NORMAL;}
 
     public void post(String description){
-        int handle = Database.Saver.addToPosts(username, name, LocalDateTime.now(),
+        LocalDateTime dateTime = LocalDateTime.now();
+        int handle = Database.Saver.addToPosts(username, name, dateTime,
                 description, getUserType().toString());
-        for (User user: followers)
-            Database.Saver.updateFeedsFromPost(user.username, handle);
+        posts.add(new Post(handle, description, dateTime, this));
+        for (String usernames: followers)
+            Database.Saver.updateFeedsFromPost(usernames, handle);
     }
 
     public void comment(int postID, String msg){
         int handle = Database.Saver.addToComments(username, name, LocalDateTime.now(), postID, msg);
-        for (User user: followers)
-            Database.Saver.updateFeedsFromComment(user.username, handle);
+        for (String usernames: followers)
+            Database.Saver.updateFeedsFromComment(usernames, handle);
     }
 
-    public void like(int postID){
+    public boolean like(int postID){
+        if (Database.Loader.isPostLiked(postID, this.username)) return false;
+
         int handle = Database.Saver.addToLikes(postID, this.username);
-        for (User user: followers)
-            Database.Saver.updateFeedsFromLike(user.username, handle);
+        for (String usernames: followers)
+            Database.Saver.updateFeedsFromLike(usernames, handle);
+        return true;
+    }
+    public boolean unlike(int postID){
+        if (!Database.Loader.isPostLiked(postID, this.username)) return false;
+
+        Database.Changer.removeLike(postID, this.username);
+        return true;
     }
 
-    public void block(String username) {
+    public boolean follow (String username){
+        if (Database.Loader.userFollows(this.username, username)) return false;
+
+        Database.Saver.addToFollowers(this.username, username);
+        followers.add(username);
+        return true;
+    }
+    public boolean unfollow (String username){
+        if (!Database.Loader.userFollows(this.username, username)) return false;
+
+        Database.Changer.removeFromFollowers(this.username, username);
+        followers.remove(username);
+        return true;
+    }
+
+    public boolean block(String username) {
+        if (Database.Loader.isUserBlocked(this.username, username)) return false;
+
         blocklist.add(username);
         Database.Saver.addToBlocklist(this.username, username);
+        return true;
     }
-    public void unblock(String username) {
+    public boolean unblock(String username) {
+        if (!Database.Loader.isUserBlocked(this.username, username)) return false;
+
         blocklist.remove(username);
         Database.Changer.removeFromBlockList(this.username, username);
+        return true;
     }
 }

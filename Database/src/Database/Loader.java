@@ -269,4 +269,12 @@ public class Loader {
     public static boolean isUserBlocked(String blocker, String blocked) {
         return false;
     }
+
+    public static boolean isPostLiked(int postID, String username) {
+        return true;
+    }
+
+    public static boolean userFollows(String follower, String followed) {
+        return true;
+    }
 }

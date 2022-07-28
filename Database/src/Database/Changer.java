@@ -29,4 +29,12 @@ public class Changer {
     public static void removeFromBlockList(String blocker, String blocked) {
 
     }
+
+    public static void removeFromFollowers(String follower, String followed) {
+
+    }
+
+    public static void removeLike(int postID, String username) {
+
+    }
 }
