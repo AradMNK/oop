@@ -215,7 +215,7 @@ public class Loader {
     }
 
     public static int getViews(int postID) {
-        //i have already checked that the username is a business user. just go and check
+        //I have already checked that the username is a business user. just go and check
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
@@ -233,7 +233,7 @@ public class Loader {
     }
 
     public static int getNumberOfLikeStats(int postID) {
-        //i have checked that the user is business. you don't have to.
+        //I have checked that the user is business. you don't have to.
         //Also, this is the likestat; not the normal likes on a post (this is today's number of likes)
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
