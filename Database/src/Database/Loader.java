@@ -263,5 +263,6 @@ public class Loader {
 
     public static String getDirectMessageContent (int handle){
         //FIXME if theres no handle return "reply was deleted"
+        return "reply was deleted";
     }
 }
