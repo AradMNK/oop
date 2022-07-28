@@ -3,7 +3,7 @@ package Objects;
 import java.time.LocalDate;
 
 public class DirectMessage {
-    private SaveHandle ID;
+    private SaveHandle ID, replyToID;
     private String content;
     private String username, userName, originalUsername;
     private LocalDate date;
@@ -25,4 +25,7 @@ public class DirectMessage {
 
     public LocalDate getDate() {return date;}
     public void setDate(LocalDate date) {this.date = date;}
+
+    public SaveHandle getReplyToID() {return replyToID;}
+    public void setReplyToID(SaveHandle replyToID) {this.replyToID = replyToID;}
 }

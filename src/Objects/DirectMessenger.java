@@ -17,6 +17,7 @@ public class DirectMessenger {
 
     public SaveHandle getDirectID() {return directID;}
     public void setDirectID(SaveHandle directID) {this.directID = directID;}
+    public void setDirectID(int directID) {this.directID = new SaveHandle(directID);}
 
     public User getRecipient() {return recipient;}
     public void setRecipient(User recipient) {this.recipient = recipient;}

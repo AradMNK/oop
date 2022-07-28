@@ -57,7 +57,7 @@ public class Saver {
 
     }
 
-    public static void addToMessages(int directID, String sender, String originalSender, LocalDate now, String line) {
+    public static void addToMessages(int directID, String sender, String originalSender, LocalDate now, String line, int replyMsgID) {
 
     }
 }

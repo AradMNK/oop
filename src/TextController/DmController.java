@@ -10,8 +10,8 @@ import Objects.DirectMessenger;
 import java.time.LocalDate;
 
 public class DmController {
-    final static int replyShowNum = 10;
-    final static String inReplyTo = "in reply to: ", ellipsis = "...";
+    final static int replyShowNum = 10, notReplyID = 0;
+    final static String inReplyTo = "In reply to: ", ellipsis = "...";
     public static DirectMessenger dm;
 
     public static void attemptEntrance(String username) {
@@ -29,9 +29,30 @@ public class DmController {
         : new DirectMessenger(Loginner.loginnedUser, UserBuilder.getUserFromDatabase(username));
         //if users have dm load else create
 
+        showPreviousChats();
         enterChatMode();
 
         dm = null;
+    }
+
+    private static void showPreviousChats() {
+        for (DirectMessage directMessage : dm.getShownMessages()) {
+            if (directMessage.getReplyToID().getHandle() != 0) { //it's a replied message
+                String repliedMessage = Database.Loader.getDirectMessageContent(directMessage.getReplyToID().getHandle());
+                TextController.print("[" + getInReplyTo(repliedMessage) + "] ");
+                TextController.println(getMessage(directMessage));
+            }
+            else if (directMessage.getOriginalUsername().equals(dm.getUser().getUsername())){ //it's normal message
+                TextController.println(getMessage(directMessage));
+            } else { //it's a forwarded message
+                TextController.print("[Forwarded from @" + directMessage.getOriginalUsername() + "] ");
+                TextController.println(getMessage(directMessage));
+            }
+        }
+    }
+
+    private static String getMessage(DirectMessage directMessage) {
+        return ("(" + directMessage.getDate() + ") " + directMessage.getUserName() + " :" + directMessage.getContent());
     }
 
     private static void enterChatMode() {
@@ -42,7 +63,7 @@ public class DmController {
             if (actOnCommand(line)) break;
             else {
                 Database.Saver.addToMessages(dm.getDirectID().getHandle(),
-                        dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), line);
+                        dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), line, notReplyID);
             }
         }
     }
@@ -55,6 +76,7 @@ public class DmController {
                 case NONE -> TextController.println("SYSTEM: Why are you typing nothing? What is your problem?");
 
                 case EDIT -> {try {edit(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
+                case DELETE -> {try {delete(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case FORWARD -> {try {forward(Integer.parseInt(split[1]), split[2]);} catch (NumberFormatException e) {e.printStackTrace();}}
 
@@ -82,11 +104,14 @@ public class DmController {
 
         Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
                 Loginner.loginnedUser.getUsername(), dm.getShownMessages().get(num).getOriginalUsername(), LocalDate.now(),
-                dm.getShownMessages().get(num).getContent());
+                dm.getShownMessages().get(num).getContent(),notReplyID);
         //FIXME
     }
 
-    private static void refresh() {dm = DirectMessengerBuilder.getDirectMessengerFromDatabase(dm.getUser(), dm.getRecipient());}
+    private static void refresh() {
+        dm = DirectMessengerBuilder.getDirectMessengerFromDatabase(dm.getUser(), dm.getRecipient());
+        showPreviousChats();
+    }
 
     private static void reply(int num) {
         final int size = dm.getShownMessages().size();
@@ -95,8 +120,9 @@ public class DmController {
             return;
         }
 
-
-        //FIXME
+        TextController.println(getInReplyTo(num));
+        Database.Saver.addToMessages(dm.getDirectID().getHandle(),
+                dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), TextController.getLine(), notReplyID);
     }
 
     private static void edit(int num) {
@@ -112,8 +138,39 @@ public class DmController {
 
         DirectMessage directMessage = dm.getShownMessages().get(num);
         Database.Changer.editMessage(directMessage.getID().getHandle(), TextController.getLine());
-        TextController.println("Successfully edited your message.");
-        //FIXME
+        TextController.println("SYSTEM: Successfully edited your message.");
+    }
+
+    private static void delete(int num) {
+        final int size = dm.getShownMessages().size();
+        if (num > size){
+            TextController.println("The number entered exceeds the total messages. (" + size + ")");
+            return;
+        }
+        if (!dm.getShownMessages().get(num).getOriginalUsername().equals(dm.getUser().getUsername())){
+            TextController.println("You cannot edit another person's message!");
+            return;
+        }
+
+        DirectMessage directMessage = dm.getShownMessages().get(num);
+        Database.Changer.deleteMessage(directMessage.getID().getHandle());
+        TextController.println("SYSTEM: Successfully deleted your message. Reloading chat: ");
+        refresh();
+    }
+
+
+
+    private static String getInReplyTo(int num){
+        DirectMessage directMessage = dm.getShownMessages().get(num);
+        String out = (directMessage.getContent().length() > replyShowNum + ellipsis.length()) ?
+                directMessage.getContent().substring(0, replyShowNum) + ellipsis : directMessage.getContent();
+        return inReplyTo + "[" + out + "]";
+    }
+
+    private static String getInReplyTo(String msg){
+        String out = (msg.length() > replyShowNum + ellipsis.length()) ?
+                msg.substring(0, replyShowNum) + ellipsis : msg;
+        return inReplyTo + "[" + out + "]";
     }
 }
 
@@ -122,6 +179,7 @@ enum DmCommand{
     EDIT("\\edit"),
     REFRESH("\\ref"),
     FORWARD("\\forward"),
+    DELETE("\\del"),
     LEAVE("/leave"),
 
     NONE("");

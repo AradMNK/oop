@@ -21,4 +21,8 @@ public class Changer {
     public static void editMessage(int messageID, String line) {
 
     }
+
+    public static void deleteMessage(int handle) {
+
+    }
 }

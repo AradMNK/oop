@@ -1,17 +1,17 @@
 package Objects;
 
 public class Handle {
-    private int handle;
+    private String handle;
 
-    public Handle(int id){handle = id;}
+    public Handle(String id){handle = id;}
 
-    public int getHandle() {return handle;}
+    public String getHandle() {return handle;}
 
-    public void setHandle(int handle) {this.handle = handle;}
+    public void setHandle(String handle) {this.handle = handle;}
 
     @Override
     public boolean equals(Object o){
         if (!o.getClass().equals(Handle.class)) return false;
-        return (((Handle) o).handle == handle);
+        return (((Handle) o).handle.equals(handle));
     }
 }
