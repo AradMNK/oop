@@ -41,7 +41,7 @@ public class DmController {
             line = TextController.getLine();
             if (actOnCommand(line)) break;
             else {
-                Database.Saver.addToMessages(dm.getDirectID().toString(),
+                Database.Saver.addToMessages(dm.getDirectID().getHandle(),
                         dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), line);
             }
         }
@@ -56,7 +56,7 @@ public class DmController {
 
                 case EDIT -> {try {edit(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
-                case FORWARD -> {try {forward(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
+                case FORWARD -> {try {forward(Integer.parseInt(split[1]), split[2]);} catch (NumberFormatException e) {e.printStackTrace();}}
 
                 case REFRESH -> refresh();
 
@@ -69,7 +69,20 @@ public class DmController {
         return false;
     }
 
-    private static void forward(int num) {
+    private static void forward(int num, String username) {
+        final int size = dm.getShownMessages().size();
+        if (num > size){
+            TextController.println("The number entered exceeds the total messages. (" + size + ")");
+            return;
+        }
+        if (!Database.Loader.usernameExists(username)){
+            TextController.println("The username [@" + username + "] does not exist.");
+            return;
+        }
+
+        Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
+                Loginner.loginnedUser.getUsername(), dm.getShownMessages().get(num).getOriginalUsername(), LocalDate.now(),
+                dm.getShownMessages().get(num).getContent());
         //FIXME
     }
 
@@ -92,7 +105,7 @@ public class DmController {
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
-        if (!dm.getShownMessages().get(size - num).getOriginalUsername().equals(dm.getUser().getUsername())){
+        if (!dm.getShownMessages().get(num).getOriginalUsername().equals(dm.getUser().getUsername())){
             TextController.println("You cannot edit another person's message!");
             return;
         }

@@ -5,11 +5,14 @@ import Login.Loginner;
 import Objects.User;
 
 public class CommentController {
-    static void newComment(String postID){
+    static void newComment(String postIDasString){
         if (Loginner.loginState == LoginState.SIGN_OUT){
             TextController.println("Please login first to comment.");
             return;
         }
+
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
 
         User user = Loginner.loginnedUser;
         if (!Database.Loader.postIdExists(postID)){

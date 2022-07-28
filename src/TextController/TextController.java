@@ -42,11 +42,14 @@ public class TextController {
         }
     }
 
-    private static void likers(String postID) {
+    private static void likers(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
             return;
         }
+
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
 
         if (!Database.Loader.postIdExists(postID)) {
             println("PostID \"" + postID + "\" does not exist.");
@@ -56,11 +59,13 @@ public class TextController {
         Display.writeUsers(Database.Loader.getLikerUsernames(postID));
     }
 
-    private static void likes(String postID) {
+    private static void likes(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
             return;
         }
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
 
         if (!Database.Loader.postIdExists(postID)) {
             println("PostID \"" + postID + "\" does not exist.");
@@ -70,11 +75,14 @@ public class TextController {
         println("Total likes on your post [" + postID + "] is: " + Database.Loader.getNumberOfLikes(postID));
     }
 
-    private static void like(String postID) {
+    private static void like(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first to like a post.");
             return;
         }
+
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
 
         if (!Database.Loader.postIdExists(postID)) {
             println("PostID \"" + postID + "\" does not exist.");

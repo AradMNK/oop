@@ -54,14 +54,14 @@ public class User {
             Database.Saver.updateFeedsFromPost(user.username, handle);
     }
 
-    public void comment(String postID, String msg){
+    public void comment(int postID, String msg){
         LocalDate date = LocalDate.now();
         int handle = Database.Saver.addToComments(username, name, LocalDate.now(), postID, msg);
         for (User user: followers)
             Database.Saver.updateFeedsFromComment(user.username, handle);
     }
 
-    public void like(String postID){
+    public void like(int postID){
         int handle = Database.Saver.addToLikes(postID, this.username);
         for (User user: followers)
             Database.Saver.updateFeedsFromLike(user.username, handle);

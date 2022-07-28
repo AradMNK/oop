@@ -29,7 +29,7 @@ public class Saver {
         return 0; //return the handle
     }
 
-    public static int addToComments(String username, String name, LocalDate now, String postID, String msg) {
+    public static int addToComments(String username, String name, LocalDate now, int postID, String msg) {
         //FIXME same as above
         return 0; // return the handle
     }
@@ -38,10 +38,10 @@ public class Saver {
         //FIXME
     }
 
-    public static int addToLikes(String postID, String username) {
+    public static int addToLikes(int postID, String username) {
         //FIXME create a new table for a postID's likes and store usernames in it. THAT'S IT. nothing more nothing less
         // and it has to be upon creation. Here u can change it.
-        return 0; // the ai handle
+        return 0; // the AI handle
     }
 
     public static void updateFeedsFromLike(String username, int ID) {
@@ -57,7 +57,7 @@ public class Saver {
 
     }
 
-    public static void addToMessages(String directID, String sender, String originalSender, LocalDate now, String line) {
+    public static void addToMessages(int directID, String sender, String originalSender, LocalDate now, String line) {
 
     }
 }

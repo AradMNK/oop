@@ -17,14 +17,16 @@ public class StatsController {
         }
 
         if (args.length > 0){
-            showForPostID(args[0]);
+            int postID;
+            try {postID = Integer.parseInt(args[0]);} catch (NumberFormatException e){e.printStackTrace(); return;}
+            showForPostID(postID);
             return;
         }
 
         TextController.println("Today's views on your account: " + Database.Loader.getViews(Loginner.loginnedUser.getUsername()));
     }
 
-    private static void showForPostID(String postID) {
+    private static void showForPostID(int postID) {
         if (!Database.Loader.postIdExists(postID)){
             TextController.println("PostID \"" + postID + "\" does not exist.");
             return;

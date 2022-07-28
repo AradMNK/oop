@@ -8,14 +8,14 @@ public class Loader {
     public static boolean loginMatch(String username, String hashPass){
         //(this is checking if login credentials match)
         //declares username and password found in the results
-        String loginUsername = null;
-        String loginPassword = null;
+        String loginUsername;
+        String loginPassword;
 
         //declares a boolean for match, it's false by default in case no results is found or the password isn't true
         boolean match = false;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT username, hashPass FROM users WHERE username = " + username + ";").executeQuery();
             resultSet.next();
@@ -40,13 +40,13 @@ public class Loader {
 
     public static boolean usernameExists(String username){//this checks if the username exists in the "login" table
         //declares the username found in the results
-        String existUsername = null;
+        String existUsername;
 
         //declares a boolean for existence, it's false by default in case no results is found or the password isn't true
         boolean exists = false;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT username, hashPass FROM users WHERE username = " + username + ";").executeQuery();
             resultSet.next();
@@ -66,12 +66,6 @@ public class Loader {
         return exists;
     }
 
-
-    public static boolean userHasFeed(String username) {
-        //FIXME
-        return true;
-    }
-
     public static boolean userHasCommentFeed(String username) {
         //FIXME
         return true;
@@ -82,23 +76,23 @@ public class Loader {
         return true;
     }
 
-    public static boolean postIdExists(String postID) {
+    public static boolean postIdExists(int postID) {
 
         //declares the postID found in the results
-        String existPostID = null;
+        int existPostID;
 
         //declares a boolean for existence, it's false by default in case no results is found or the password isn't true
         boolean exists = false;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT postID FROM posts WHERE postID = " + postID + ";").executeQuery();
             resultSet.next();
-            existPostID = resultSet.getString(1);
+            existPostID = resultSet.getInt(1);
 
             //checks if the postID exists
-            if (postID.equals(existPostID)){
+            if (postID == existPostID){
                 exists = true;
             }
         }
@@ -111,12 +105,12 @@ public class Loader {
         return exists;
     }
 
-    public static int getNumberOfLikes(String postID) {
+    public static int getNumberOfLikes(int postID) {
         //declares the number of likes
         int numberOfLikes = 0;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT COUNT(postID) FROM likes WHERE postID = " + postID + ";").executeQuery();
             resultSet.next();
@@ -132,15 +126,15 @@ public class Loader {
         return numberOfLikes;
     }
 
-    public static String[] getLikerUsernames(String postID) {
+    public static String[] getLikerUsernames(int postID) {
         //declares the empty array
         String[] likerUsernames = new String[0];
 
         //declares the number of likes
-        int numberOfLikes = 0;
+        int numberOfLikes;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             //gets the number of likes
             resultSet = connection.prepareStatement("SELECT COUNT(postID) FROM likes WHERE postID = " + postID + ":").executeQuery();
@@ -170,7 +164,7 @@ public class Loader {
         String name = null;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT name FROM users WHERE username = " + username + ";").executeQuery();
             resultSet.next();
@@ -186,15 +180,15 @@ public class Loader {
         return name;
     }
 
-    public static boolean postIsAd(String postID) {
+    public static boolean postIsAd(int postID) {
         //declares the type
-        String typeOfPost = null;
+        String typeOfPost;
 
         //declares a boolean
         boolean ad = false;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT type FROM posts WHERE postID = " + postID + ";").executeQuery();
             resultSet.next();
@@ -218,7 +212,7 @@ public class Loader {
         int views = 0;
 
         Connection connection = Connector.connector.connect();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("").executeQuery();
             resultSet.next();
@@ -234,7 +228,7 @@ public class Loader {
         return 0;//
     }
 
-    public static int getNumberOfLikeStats(String postID) {
+    public static int getNumberOfLikeStats(int postID) {
         //FIXME i have checked that the user is business. you don't have to.
         // Also, this is the likestat; not the normal likes on a post (this is today's number of likes)
         return 0;
@@ -243,5 +237,10 @@ public class Loader {
     public static boolean usersHaveDm(String username1, String username2) {
 
         return true;
+    }
+
+    public static int getDirectID(String username1, String username2) {
+
+        return 0;
     }
 }
