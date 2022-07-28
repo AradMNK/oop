@@ -59,7 +59,8 @@ public class Display {
 
         TextController.println(user.getName() + "[@" + user.getUsername() + "]:");
         TextController.println("‾".repeat(user.getName().length() + 1));
-        if (user.getUserType() == UserType.BUSINESS) {
+        boolean isBusiness = (user.getUserType() == UserType.BUSINESS);
+        if (isBusiness) {
             ((BusinessUser)user).addViewToAccount();
             TextController.println("** ADS **");
         }
