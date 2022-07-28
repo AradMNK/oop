@@ -1,19 +1,14 @@
 package Objects;
 
 public class BusinessUser extends User {
-
-
     @Override
     public UserType getUserType(){return UserType.BUSINESS;}
 
     public void addViewToAccount() {
-        for (Post post: getPosts()) Database.Changer.addViewForUser(this.getUsername(), post.getPostID().getHandle());
+        for (Post post: getPosts()) addViewToAccount(post);
     }
 
     public void addViewToAccount(Post post) {
-        Database.Changer.addViewForUser(this.getUsername(), post.getPostID().getHandle());
+        Database.Changer.addViewForUser(post.getPostID().getHandle(), this.getUsername());
     }
-
-    //new methods
-        //new statistics
 }

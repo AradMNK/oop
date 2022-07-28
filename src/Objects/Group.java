@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class Group {
     private SaveHandle groupID;
     private User owner;
-    private String name;
+    private String name, groupJoiner;
 
     private final HashSet<User> participants = new HashSet<>();
     private final ArrayList<GroupMessage> shownMessages = new ArrayList<>();
@@ -19,6 +19,9 @@ public class Group {
 
     public User getOwner() {return owner;}
     public void setOwner(User owner) {this.owner = owner;}
+
+    public String getGroupJoiner() {return groupJoiner;}
+    public void setGroupJoiner(String groupJoiner) {this.groupJoiner = groupJoiner;}
 
     public HashSet<User> getParticipants() {return participants;}
     public ArrayList<GroupMessage> getShownMessages() {return shownMessages;}

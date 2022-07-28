@@ -1,5 +1,6 @@
 package TextController;
 import Builder.GroupBuilder;
+import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
 import Objects.*;
@@ -66,6 +67,11 @@ public class GroupController {
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case FORWARD -> {try {forward(Integer.parseInt(split[1]), split[2]);} catch (NumberFormatException e) {e.printStackTrace();}}
 
+                case BAN -> ban(split[1]);
+                case UNBAN -> unban(split[1]);
+                case ADD -> add(split[1]);
+                case REVOKE -> revoke(split[1]);
+
                 case REFRESH -> refresh();
                 case LEAVE -> {leave(); return true;}
 
@@ -76,6 +82,55 @@ public class GroupController {
         catch (ArrayIndexOutOfBoundsException e){
             if (line.startsWith("\\")) TextController.println("You need to provide an argument for " + line);}
         return false;
+    }
+
+    private static void revoke(String id) {
+        Database.Changer.changeGroupJoiner(id);
+    }
+
+    private static void add(String username) {
+        if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
+            TextController.println("You are not the group owner to be allowed to do this.");
+            return;
+        }
+
+        for (User participant: group.getParticipants()) {
+            if (participant.getUsername().equals(username)) {
+                TextController.println("The user is already in the group chat.");
+                return;
+            }
+        }
+
+        Database.Changer.addUserToGroup(username, group.getGroupID().getHandle());
+        group.getParticipants().add(UserBuilder.getUserFromDatabase(username));
+    }
+
+    private static void ban(String username) {
+        if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
+            TextController.println("You are not the group owner to be allowed to do this.");
+            return;
+        }
+
+        if (username.equals(group.getOwner().getUsername())){
+            TextController.println("You cannot ban the owner. You are the owner.");
+            return;
+        }
+
+        for (User participant: group.getParticipants()) {
+            if (participant.getUsername().equals(username)) {
+                group.getParticipants().remove(participant);
+                Database.Changer.removeParticipant(group.getGroupID().getHandle(), participant.getUsername());
+            }
+        }
+    }
+
+    private static void unban(String username) {
+        if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
+            TextController.println("You are not the group owner to be allowed to do this.");
+            return;
+        }
+
+        Database.Changer.removeFromBanList(username);
     }
 
     private static void leave() {
@@ -142,7 +197,7 @@ public class GroupController {
         }
 
         TextController.println("[" + getInReplyTo(num) + "]");
-        Database.Saver.addToMessages(group.getGroupID().getHandle(),
+        Database.Saver.addToGroupMessages(group.getGroupID().getHandle(),
                 Loginner.loginnedUser.getUsername(), Loginner.loginnedUser.getUsername(),
                 LocalDateTime.now(), TextController.getLine(), group.getShownMessages().get(num).getID().getHandle());
     }
@@ -158,7 +213,7 @@ public class GroupController {
         }
 
         Message message = group.getShownMessages().get(num);
-        Database.Changer.editMessage(message.getID().getHandle(), TextController.getLine());
+        Database.Changer.editGroupMessage(message.getID().getHandle(), TextController.getLine());
         TextController.println("SYSTEM: Successfully edited your message.");
     }
     private static void delete(int num) {
@@ -173,7 +228,7 @@ public class GroupController {
         }
 
         Message message = group.getShownMessages().get(num);
-        Database.Changer.deleteMessage(message.getID().getHandle());
+        Database.Changer.deleteGroupMessage(message.getID().getHandle());
         TextController.println("SYSTEM: Successfully deleted your message. Reloading chat: ");
         refresh();
     }
@@ -228,7 +283,12 @@ enum GroupCommand{
     REFRESH("\\ref"),
     FORWARD("\\forward"),
     DELETE("\\del"),
+
     BAN("\\ban"),
+    UNBAN("\\unban"),
+    ADD("\\add"),
+    REVOKE("\\revoke"),
+
     LEAVE("\\leave"),
 
     EXIT("/exit"),

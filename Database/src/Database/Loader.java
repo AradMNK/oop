@@ -292,4 +292,8 @@ public class Loader {
     public static boolean groupExists(int groupID) {
         return true;
     }
+
+    public static boolean groupJoinedExists(String groupJoiner) {
+        return true;
+    }
 }

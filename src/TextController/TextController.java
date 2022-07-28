@@ -62,9 +62,17 @@ public class TextController {
         }
 
         Group group = new Group();
-        group.setGroupID(new SaveHandle(Database.Saver.createGroup(Loginner.loginnedUser.getUsername())));
         TextController.println("Please enter a name for your group chat:");
         group.setName(TextController.getLine());
+        TextController.println("Please enter a joining ID for inviting people.");
+        group.setGroupJoiner(TextController.getLine());
+        if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
+            TextController.println("Joining ID already exists. Please choose a new one.");
+            return;
+        }
+        group.setGroupID(new SaveHandle(Database.Saver.createGroup
+                (Loginner.loginnedUser.getUsername(), group.getName(), group.getGroupJoiner())));
+        group.getParticipants().add(Loginner.loginnedUser);
 
         GroupController.attemptEntrance(group);
     }
@@ -173,7 +181,6 @@ public class TextController {
 
         if (!Loginner.loginnedUser.follow(username)) println("You already follow [@" + username + "].");
     }
-
     private static void unfollow(String username) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             println("Please login first before trying to unfollow anyone.");

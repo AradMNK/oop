@@ -84,4 +84,24 @@ public class Changer {
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
     }
+
+    public static void changeGroupJoiner(String newID) {
+
+    }
+
+    public static void addUserToGroup(String username, int handle) {
+
+    }
+
+    public static void removeParticipant(int handle, String username) {
+
+    }
+
+    public static void removeFromBanList(String username) {
+
+    }
+
+    public static void removeFromGroups(String username, int handle) {
+
+    }
 }
