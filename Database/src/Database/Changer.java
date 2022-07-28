@@ -2,11 +2,15 @@ package Database;
 
 public class Changer {
     public static void removePostFromFeed(String username, int postID) {
-        //FIXME
+        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + postID + " AND type = post;");
     }
 
     public static void removeCommentFromFeed(String username, int commentID) {
-        //FIXME
+        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + commentID + " AND type = cpmment;");
+    }
+
+    public static void removeLikeFromFeed(String username, int likeID) {
+        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + likeID + " AND type = like;");
     }
 
     public static void addViewForUser(String username) {
