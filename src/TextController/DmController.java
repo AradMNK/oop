@@ -13,6 +13,7 @@ public class DmController {
     final static int replyShowNum = 10, notReplyID = 0;
     final static String inReplyTo = "In reply to: ", ellipsis = "...";
     public static DirectMessenger dm;
+    public static boolean uBlocked, uBlocker;
 
     public static void attemptEntrance(String username) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
@@ -30,6 +31,11 @@ public class DmController {
         //if users have dm load else create
 
         showPreviousChats();
+
+        uBlocked = Database.Loader.isUserBlocked(dm.getUser().getUsername(), dm.getRecipient().getUsername());
+        uBlocker = Loginner.loginnedUser.getBlocklist().contains(dm.getRecipient().getUsername());
+        blockMessage();
+
         enterChatMode();
 
         dm = null;
@@ -62,6 +68,7 @@ public class DmController {
             line = TextController.getLine();
             if (actOnCommand(line)) break;
             else {
+                if (uBlocked || uBlocker) {blockMessage(); continue;}
                 Database.Saver.addToMessages(dm.getDirectID().getHandle(),
                         dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), line, notReplyID);
             }
@@ -79,6 +86,8 @@ public class DmController {
                 case DELETE -> {try {delete(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case REPLY -> {try {reply(Integer.parseInt(split[1]));} catch (NumberFormatException e) {e.printStackTrace();}}
                 case FORWARD -> {try {forward(Integer.parseInt(split[1]), split[2]);} catch (NumberFormatException e) {e.printStackTrace();}}
+                case BLOCK -> block();
+                case UNBLOCK -> unblock();
 
                 case REFRESH -> refresh();
 
@@ -89,6 +98,25 @@ public class DmController {
         catch (ArrayIndexOutOfBoundsException e){
             if (line.startsWith("\\")) TextController.println("You need to provide an argument for " + line);}
         return false;
+    }
+
+    private static void unblock() {
+        if (!uBlocker){
+            TextController.println("The user [@" + dm.getRecipient().getUsername() + "] was not in your blocklist.");
+            return;
+        }
+
+        uBlocker = false;
+        Loginner.loginnedUser.unblock(dm.getRecipient().getUsername());
+    }
+    private static void block() {
+        if (uBlocker){
+            TextController.println("The user [@" + dm.getRecipient().getUsername() + "] was already in your blocklist.");
+            return;
+        }
+
+        uBlocker = true;
+        Loginner.loginnedUser.block(dm.getRecipient().getUsername());
     }
 
     private static void forward(int num, String username) {
@@ -102,29 +130,25 @@ public class DmController {
             return;
         }
 
+
+
         Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
                 Loginner.loginnedUser.getUsername(), dm.getShownMessages().get(num).getOriginalUsername(), LocalDate.now(),
                 dm.getShownMessages().get(num).getContent(),notReplyID);
-        //FIXME
     }
-
-    private static void refresh() {
-        dm = DirectMessengerBuilder.getDirectMessengerFromDatabase(dm.getUser(), dm.getRecipient());
-        showPreviousChats();
-    }
-
     private static void reply(int num) {
+        if (uBlocked || uBlocker) {blockMessage(); return;}
+
         final int size = dm.getShownMessages().size();
         if (num > size){
             TextController.println("The number entered exceeds the total messages. (" + size + ")");
             return;
         }
 
-        TextController.println(getInReplyTo(num));
+        TextController.println("[" + getInReplyTo(num) + "]");
         Database.Saver.addToMessages(dm.getDirectID().getHandle(),
                 dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDate.now(), TextController.getLine(), notReplyID);
     }
-
     private static void edit(int num) {
         final int size = dm.getShownMessages().size();
         if (num > size){
@@ -140,7 +164,6 @@ public class DmController {
         Database.Changer.editMessage(message.getID().getHandle(), TextController.getLine());
         TextController.println("SYSTEM: Successfully edited your message.");
     }
-
     private static void delete(int num) {
         final int size = dm.getShownMessages().size();
         if (num > size){
@@ -156,10 +179,15 @@ public class DmController {
         Database.Changer.deleteMessage(message.getID().getHandle());
         TextController.println("SYSTEM: Successfully deleted your message. Reloading chat: ");
         refresh();
-
     }
+    private static void refresh() {
+        dm = DirectMessengerBuilder.getDirectMessengerFromDatabase(dm.getUser(), dm.getRecipient());
+        showPreviousChats();
 
-
+        uBlocked = Database.Loader.isUserBlocked(dm.getUser().getUsername(), dm.getRecipient().getUsername());
+        uBlocker = Loginner.loginnedUser.getBlocklist().contains(dm.getRecipient().getUsername());
+        blockMessage();
+    }
 
     private static String getInReplyTo(int num){
         Message message = dm.getShownMessages().get(num);
@@ -171,6 +199,26 @@ public class DmController {
         String out = (msg.length() > replyShowNum + ellipsis.length()) ?
                 msg.substring(0, replyShowNum) + ellipsis : msg;
         return inReplyTo + "[" + out + "]";
+    }
+
+    private static void blockMessage(){
+        if (uBlocked && uBlocker){
+            TextController.println("You have blocked each other. Be the first to break the ice by unblocking using \\unblock!");
+        } else if (uBlocked) {
+            TextController.println("You have been blocked by the other user and cannot send messages to them anymore.");
+        } else if (uBlocker){
+            TextController.println("You have blocked the user. Break the ice by unblocking using \\unblock!");}
+    }
+
+    private static void blockMessage(DirectMessenger directMessenger){
+        boolean urBlocked = Database.Loader.isUserBlocked(directMessenger.getUser().getUsername(), directMessenger.getRecipient().getUsername()),
+                urBlocker = Database.Loader.isUserBlocked(directMessenger.getRecipient().getUsername(), directMessenger.getUser().getUsername());
+        if (urBlocked && urBlocker){
+            TextController.println("You have blocked each other. Be the first to break the ice by unblocking using \\unblock!");
+        } else if (urBlocked) {
+            TextController.println("You have been blocked by the other user and cannot send messages to them anymore.");
+        } else if (urBlocker){
+            TextController.println("You have blocked the user. Break the ice by unblocking using \\unblock!");}
     }
 }
 

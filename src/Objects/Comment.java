@@ -1,13 +1,13 @@
 package Objects;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Comment {
     private String msg;
     private User commenter;
     private SaveHandle commentID;
     private Post post;
-    private LocalDate date;
+    private LocalDateTime date;
 
     public Post getPost() {return post;}
     public void setPost(Post post) {this.post = post;}
@@ -21,6 +21,6 @@ public class Comment {
     public SaveHandle getCommentID() {return commentID;}
     public void setCommentID(SaveHandle commentID) {this.commentID = commentID;}
 
-    public LocalDate getDate() {return date;}
-    public void setDate(LocalDate date) {this.date = date;}
+    public LocalDateTime getDate() {return date;}
+    public void setDate(LocalDateTime date) {this.date = date;}
 }

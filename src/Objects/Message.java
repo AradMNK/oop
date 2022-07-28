@@ -1,12 +1,13 @@
 package Objects;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Message {
     private SaveHandle ID, replyToID;
     private String content;
     private String username, userName, originalUsername;
-    private LocalDate date;
+    private LocalDateTime date;
 
     public SaveHandle getID() {return ID;}
     public void setID(SaveHandle ID) {this.ID = ID;}
@@ -23,8 +24,8 @@ public class Message {
     public String getOriginalUsername() {return originalUsername;}
     public void setOriginalUsername(String originalUsername) {this.originalUsername = originalUsername;}
 
-    public LocalDate getDate() {return date;}
-    public void setDate(LocalDate date) {this.date = date;}
+    public LocalDateTime getDate() {return date;}
+    public void setDate(LocalDateTime date) {this.date = date;}
 
     public SaveHandle getReplyToID() {return replyToID;}
     public void setReplyToID(SaveHandle replyToID) {this.replyToID = replyToID;}

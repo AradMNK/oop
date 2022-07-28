@@ -56,13 +56,7 @@ public class Connector{
 
     public static void queryWithoutResult(String statement){
         Connection connection = connector.connect();
-        try{
-            connection.prepareStatement(statement).execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        finally {
-            Connector.connector.disconnect();
-        }
+        try{connection.prepareStatement(statement).execute();} catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
     }
 }

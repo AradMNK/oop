@@ -1,6 +1,7 @@
 package Objects;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 public class User {
@@ -9,7 +10,8 @@ public class User {
     private Feed feed;
     private final HashSet<DirectMessenger> dms = new HashSet<>();
     private final HashSet<Post> posts = new HashSet<>();
-    private final HashSet<User> blocklist = new HashSet<>(), followers = new HashSet<>(), followings = new HashSet<>();
+    private final HashSet<String> blocklist = new HashSet<>();
+    private final HashSet<User> followers = new HashSet<>(), followings = new HashSet<>();
     private final HashSet<Group> groups = new HashSet<>();
     private LocalDate dateJoined;
 
@@ -33,7 +35,7 @@ public class User {
 
     public HashSet<DirectMessenger> getDms() {return dms;}
     public HashSet<Post> getPosts() {return posts;}
-    public HashSet<User> getBlocklist() {return blocklist;}
+    public HashSet<String> getBlocklist() {return blocklist;}
     public HashSet<User> getFollowers() {return followers;}
     public HashSet<User> getFollowings() {return followings;}
     public HashSet<Group> getGroups() {return groups;}
@@ -47,16 +49,14 @@ public class User {
     public UserType getUserType(){return UserType.NORMAL;}
 
     public void post(String description){
-        LocalDate date = LocalDate.now();
-        int handle = Database.Saver.addToPosts(username, name, LocalDate.now(),
+        int handle = Database.Saver.addToPosts(username, name, LocalDateTime.now(),
                 description, getUserType().toString());
         for (User user: followers)
             Database.Saver.updateFeedsFromPost(user.username, handle);
     }
 
     public void comment(int postID, String msg){
-        LocalDate date = LocalDate.now();
-        int handle = Database.Saver.addToComments(username, name, LocalDate.now(), postID, msg);
+        int handle = Database.Saver.addToComments(username, name, LocalDateTime.now(), postID, msg);
         for (User user: followers)
             Database.Saver.updateFeedsFromComment(user.username, handle);
     }
@@ -65,5 +65,14 @@ public class User {
         int handle = Database.Saver.addToLikes(postID, this.username);
         for (User user: followers)
             Database.Saver.updateFeedsFromLike(user.username, handle);
+    }
+
+    public void block(String username) {
+        blocklist.add(username);
+        Database.Saver.addToBlocklist(this.username, username);
+    }
+    public void unblock(String username) {
+        blocklist.remove(username);
+        Database.Changer.removeFromBlockList(this.username, username);
     }
 }

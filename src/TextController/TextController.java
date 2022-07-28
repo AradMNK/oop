@@ -34,12 +34,37 @@ public class TextController {
             case FOLLOWINGS -> Display.followings(command.getArgs());
             case STATS -> StatsController.show(command.getArgs());
             case DM -> DmController.attemptEntrance(command.getArgs()[0]);
+            case BLOCK -> block(command.getArgs()[0]);
+            case UNBLOCK -> unblock(command.getArgs()[0]);
 
             case EXIT -> println("Paradoxical");
             case NONE -> println("You have typed in /" + CommandType.NONE + "! This command does nothing you idiot!");
 
             default -> println("No match for command /" + command.getCommandType());
         }
+    }
+
+    private static void unblock(String username) {
+        if (!Loginner.loginnedUser.getBlocklist().contains(username)){
+            TextController.println("The user [@" + username + "] was not in your blocklist.");
+            return;
+        }
+
+        Loginner.loginnedUser.unblock(username);
+    }
+
+    private static void block(String username) {
+        if (Loginner.loginnedUser.getBlocklist().contains(username)){
+            TextController.println("The user [@" + username + "] was already in your blocklist.");
+            return;
+        }
+
+        if (!Database.Loader.usernameExists(username)){
+            TextController.println("The user [@" + username + "] does not exist.");
+            return;
+        }
+
+        Loginner.loginnedUser.block(username);
     }
 
     private static void likers(String postIDasString) {

@@ -20,6 +20,8 @@ public enum CommandType {
     FOLLOWINGS("followings"),
     STATS("stats"),
     DM("dm"),
+    BLOCK("block"),
+    UNBLOCK("unblock"),
 
     UPDATE("update"),
 
