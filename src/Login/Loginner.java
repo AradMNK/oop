@@ -55,6 +55,7 @@ public class Loginner {
     public static void signout() {
         loginState = LoginState.SIGN_OUT;
         loginnedUser = null;
+        TextController.println("Signed out.");
     }
 
     public static void reload(){

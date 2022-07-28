@@ -1,12 +1,15 @@
 package Builder;
 
 import Objects.Post;
-import Objects.SaveHandle;
 
 public class PostBuilder {
-    public static Post getPostFromDatabase(SaveHandle saveHandle){
+    public static Post getPostFromDatabase(int postID){
         //FIXME
 
+        return new Post();
+    }
+
+    public static Post getPostFromDatabaseWithComments(int postID) {
         return new Post();
     }
 }

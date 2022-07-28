@@ -53,5 +53,7 @@ public class Creator {
         Loginner.loginnedUser.setDateJoined(LocalDate.now());
         Loginner.loginnedUser.setName(name);
         Loginner.loginState = LoginState.SIGN_IN;
+
+        TextController.println("Successfully created user.");
     }
 }

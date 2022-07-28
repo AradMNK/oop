@@ -33,6 +33,11 @@ public class StatsController {
             return;
         }
 
+        if (!Database.Loader.getPostPoster(postID).equals(Loginner.loginnedUser.getUsername())){
+            TextController.println("That post is not your post!");
+            return;
+        }
+
         TextController.println("Today's likes on post \"" + postID + "\"were: " + Database.Loader.getNumberOfLikeStats(postID));
         TextController.println("Today's views on post \"" + postID + "\"were: " + Database.Loader.getViews(postID));
     }

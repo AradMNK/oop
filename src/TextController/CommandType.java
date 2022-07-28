@@ -20,6 +20,7 @@ public enum CommandType {
 
     LIKES("likes"),
     LIKERS("likers"),
+    COMMENTS("comments"),
     POSTS("posts"),
     FOLLOWERS("followers"),
     FOLLOWINGS("followings"),

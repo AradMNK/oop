@@ -1,14 +1,14 @@
 package TextController;
 
+import Builder.PostBuilder;
 import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
-import Objects.BusinessUser;
-import Objects.Post;
-import Objects.User;
-import Objects.UserType;
+import Objects.*;
 
 public class Display {
+    private static final int overlineCount = 15;
+
     public static void accountDetails(String[] args) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             TextController.println("Please login first to see account details.");
@@ -118,5 +118,28 @@ public class Display {
     public static void writeUsers(String[] usernames){
         for (String username : usernames)
             TextController.println(Database.Loader.getUserName(username) + " [@" + username + "]");
+    }
+
+    public static void writeComments(int postID) {
+        Post post = PostBuilder.getPostFromDatabaseWithComments(postID);
+        TextController.println("Post:");
+        writePost(post);
+        TextController.println("‾".repeat(overlineCount));
+        TextController.println("Comments:");
+        for (Comment comment: post.getComments()) writeComment(comment);
+    }
+
+    private static void writePost(Post post){
+        if (post.getPoster().getUserType() == UserType.BUSINESS) TextController.print("** AD **");
+        TextController.println("(" + post.getDatePosted() + ") "
+                + post.getPoster().getName() + "[@" + post.getPoster().getUsername() + "]:" );
+        TextController.println(post.getDescription());
+        TextController.println("postid: " + post.getPostID());
+    }
+
+    private static void writeComment(Comment comment) {
+        TextController.println("(" + comment.getDate() + ") "
+                + comment.getCommenter().getName() + "[@" + comment.getCommenter().getUsername() + "]:" );
+        TextController.println(comment.getMsg());
     }
 }

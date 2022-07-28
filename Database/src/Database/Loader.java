@@ -230,8 +230,6 @@ public class Loader {
     }
 
     public static int getNumberOfLikeStats(int postID) {
-        //I have checked that the user is business. you don't have to.
-        //Also, this is the likestat; not the normal likes on a post (this is today's number of likes)
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
@@ -293,5 +291,9 @@ public class Loader {
 
     public static boolean groupJoinedExists(String groupJoiner) {
         return true;
+    }
+
+    public static String getPostPoster(int postID) {
+        return ""; //Poster username FIXME
     }
 }

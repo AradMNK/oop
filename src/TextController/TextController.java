@@ -25,15 +25,16 @@ public class TextController {
             case RELOAD -> Loginner.reload();
 
             case DETAILS -> Display.accountDetails(command.getArgs());
-            case POSTS -> Display.accountPosts(command.getArgs());
+
             case POST -> PostController.newPost();
             case COMMENT -> CommentController.newComment(command.getArgs()[0]);
-
             case LIKE -> like(command.getArgs()[0]);
             case UNLIKE -> unlike(command.getArgs()[0]);
 
             case LIKES -> likes(command.getArgs()[0]);
+            case COMMENTS -> comments(command.getArgs()[0]);
             case LIKERS -> likers(command.getArgs()[0]);
+            case POSTS -> Display.accountPosts(command.getArgs());
 
             case FEED -> FeedController.show();
             case FOLLOW -> follow(command.getArgs()[0]);
@@ -58,6 +59,76 @@ public class TextController {
         }
     }
 
+    private static void writeHelp() {
+        println("/" + CommandType.HELP + " (username) (password)");
+        println("Brings up this menu.");
+        println("/" + CommandType.LOGIN + " (username) (password)");
+        println("Use this to login.");
+        println("/" + CommandType.SIGNOUT);
+        println("Use this to sign out.");
+        println("/" + CommandType.CREATE_ACC + " (username) (password) (name)");
+        println("Use this to create an account.");
+        println("/" + CommandType.EDIT_ACC);
+        println("Use this to edit your account. You will have to write its tags like bio=i am sad and in the next line subtitle=hello there, for example.");
+        println("/" + CommandType.RELOAD);
+        println("Reloads you as the user with the same credentials if something isn't loading properly.");
+        println("/" + CommandType.FEED);
+        println("Use to enter feed mode and receive the latest notifications.");
+        println("/" + CommandType.DETAILS + " (otherUsername)");
+        println("Use with argument for another user or without argument for your own account to see details.");
+        println("/" + CommandType.POSTS + " (otherUsername)");
+        println("Use with argument for another user or without argument for your own account to see users' posts.");
+        println("/" + CommandType.LIKES + " (postID)");
+        println("Use with to see a post's likes.");
+        println("/" + CommandType.LIKERS + " (postID)");
+        println("Use with to see a post's likers.");
+        println("/" + CommandType.COMMENTS + " (postID)");
+        println("Use with to see a post's comments.");
+        println("/" + CommandType.POST);
+        println("Use to enter posting mode");
+        println("/" + CommandType.COMMENT);
+        println("Use to enter commenting mode");
+        println("/" + CommandType.LIKE + " (postID)");
+        println("Use to like a post.");
+        println("/" + CommandType.UNLIKE + " (postID)");
+        println("Use to unlike a post.");
+        println("/" + CommandType.FOLLOW + " (username)");
+        println("Use to follow a user.");
+        println("/" + CommandType.UNFOLLOW + " (username)");
+        println("Use to unfollow a user.");
+        println("/" + CommandType.FOLLOWERS + " (username)");
+        println("Use to see your followers, or with an argument to see followers of another user.");
+        println("/" + CommandType.FOLLOWINGS);
+        println("Use to see the people you follow, or with an argument to see followings of another user.");
+        println("/" + CommandType.STATS + " (postID)");
+        println("Use with argument to see statistics of your post or use without for overall statistics (both are business-user only).");
+        println("/" + CommandType.DM + " (username)");
+        println("Use this to directly message another user and enter chat mode." +
+                "\nCommands there include:" + DmCommand.REPLY + " (number of messages starting from 0 at the bottom),\n"
+                + DmCommand.EDIT + " (number of messages starting from 0 at the bottom), \n"
+                + DmCommand.FORWARD + " (number of messages starting from 0 at the bottom) (@username OR groupID),\n"
+                + DmCommand.DELETE + " (number of messages starting from 0 at the bottom),\n"
+                + DmCommand.REFRESH + ", " + DmCommand.BLOCK + ", " + DmCommand.UNBLOCK + ", " + DmCommand.LEAVE +
+                "\n" + "-".repeat(15));
+        println("/" + CommandType.GROUPS);
+        println("Use this to see your groups and type in the groupID to enter group chat mode after using this command." +
+                "\nCommands there include:" + GroupCommand.REPLY + " (number of messages starting from 0 at the bottom),\n"
+                + GroupCommand.EDIT + " (number of messages starting from 0 at the bottom), \n"
+                + GroupCommand.FORWARD + " (number of messages starting from 0 at the bottom) (@username OR groupID),\n"
+                + GroupCommand.DELETE + " (number of messages starting from 0 at the bottom),\n"
+                + GroupCommand.REFRESH + ", " + GroupCommand.REVOKE + ", " + GroupCommand.ADD + " (username), " + GroupCommand.LEAVE +
+                "\n" + GroupCommand.BAN + " (username [admin/owner only]), " + GroupCommand.UNBAN + " (username [admin/owner only]), "
+                + GroupCommand.EXIT + "\n" + "-".repeat(15));
+        println("/" + CommandType.NEW_GROUP);
+        println("Use this command to create a new group where you are the owner/admin and enter in the details.");
+        println("/" + CommandType.RECOMMEND_USER);
+        println("Recommends a user to you.");
+        println("/" + CommandType.RECOMMEND_AD);
+        println("Recommends an ad (business type post).");
+        println("/" + CommandType.EXIT);
+        println("Exits the program.");
+    }
+
     private static void recommendUser() {
         if (Loginner.loginState == LoginState.SIGN_OUT){
             TextController.println("Please login before trying to get recommended users for you.");
@@ -70,10 +141,6 @@ public class TextController {
         for (String username: recommendedUsers) {
             println("[@" + username + "]");
         }
-    }
-
-    private static void writeHelp() {
-        println("hi");
     }
 
     private static void newGroup() {
@@ -152,6 +219,21 @@ public class TextController {
 
         println("Total likes on your post [" + postID + "] is: " + Database.Loader.getNumberOfLikes(postID));
     }
+    private static void comments(String postIDasString) {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            println("Please login first to see likes.");
+            return;
+        }
+        int postID;
+        try {postID = Integer.parseInt(postIDasString);} catch (NumberFormatException e){e.printStackTrace(); return;}
+
+        if (!Database.Loader.postIdExists(postID)) {
+            println("PostID \"" + postID + "\" does not exist.");
+            return;
+        }
+
+        Display.writeComments(postID);
+    }
 
     private static void like(String postIDasString) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
@@ -219,7 +301,9 @@ public class TextController {
 
     public static void inputCommand(){
         Command command;
-        try{command = new Command(getLine());}
+
+        String line = getLine();
+        try{command = new Command(line);}
         catch (CommandException e){
             TextController.println("What you just typed in was not defined." +
                 "\nUse /" + CommandType.HELP + " to see the available commands.");
@@ -227,10 +311,15 @@ public class TextController {
             return;
         }
 
-
         while (!command.getCommandType().equals(CommandType.EXIT)){
-            actOnCommand(command);
-            command = new Command(getLine());
+            if (!line.equals("")) actOnCommand(command);
+            try {line = getLine(); if (!line.equals("")) command = new Command(line);}
+            catch (CommandException e){
+                TextController.println("What you just typed in was not defined." +
+                        "\nUse /" + CommandType.HELP + " to see the available commands.");
+            } catch (StringIndexOutOfBoundsException | ArrayIndexOutOfBoundsException e){
+                TextController.println("Argument problem. Please try again.");
+            }
         }
     }
 
