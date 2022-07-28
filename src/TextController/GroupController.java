@@ -6,7 +6,6 @@ import Objects.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class GroupController {
     final static int replyShowNum = 10, notReplyID = 0;
@@ -80,12 +79,11 @@ public class GroupController {
     }
 
     private static void leave() {
-        if (Loginner.loginnedUser.getUsername().equals(group.getOwner().getUsername())) {
+        if (Loginner.loginnedUser.getUsername().equals(group.getOwner().getUsername()))
             Database.Changer.removeGroup(group.getGroupID().getHandle());
-            Iterator<Group> iterator = Loginner.loginnedUser.getGroups().iterator();
-            return;
-        }
-        group.getParticipants().remove(Loginner.loginnedUser);
+        else group.getParticipants().remove(Loginner.loginnedUser);
+        Loginner.loginnedUser.getGroups().removeIf(g -> g.getGroupID().equals(group.getGroupID()));
+        Database.Changer.removeFromGroups(Loginner.loginnedUser.getUsername(), group.getGroupID().getHandle());
     }
 
     private static void forward(int num, String where) {

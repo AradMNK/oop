@@ -9,8 +9,9 @@ public class Changer {
         Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + commentID + " AND type = cpmment;");
     }
 
-    public static void removeLikeFromFeed(String username, int likeID) {
-        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + likeID + " AND type = like;");
+    public static void removeLikeFromFeed(String username, int postID) {
+        //FIXME
+        Connector.queryWithoutResult("DELETE FROM feed WHERE username = '" + username + "' AND postID = " + postID + " AND type = like;");
     }
 
     public static void addViewForUser(String username) {
@@ -46,7 +47,7 @@ public class Changer {
 
     }
 
-    public static void removeLikeFromFeed(String username, int handle) {
+    public static void removeFromGroups (String username, int groupID){
 
     }
 }
