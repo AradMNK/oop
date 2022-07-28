@@ -114,7 +114,6 @@ public class Loader {
     }
 
     public static boolean postIdExists(int postID) {
-
         //declares the postID found in the results
         int existPostID;
 
@@ -276,5 +275,17 @@ public class Loader {
 
     public static boolean userFollows(String follower, String followed) {
         return true;
+    }
+
+    public static String getTotalViews(String username) {
+        return "";
+    }
+
+    public static String getTotalLikes(String username) {
+        return "";
+    }
+
+    public static String getGroupMessageContent(int handle) {
+        return "";
     }
 }

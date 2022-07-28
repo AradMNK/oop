@@ -23,7 +23,8 @@ public class StatsController {
             return;
         }
 
-        //TextController.println("Today's views on your account: " + Database.Loader.getViews(Loginner.loginnedUser.getUsername()));
+        TextController.println("Today's views on your account: " + Database.Loader.getTotalViews(Loginner.loginnedUser.getUsername()));
+        TextController.println("Today's likes on your account: " + Database.Loader.getTotalLikes(Loginner.loginnedUser.getUsername()));
     }
 
     private static void showForPostID(int postID) {
@@ -33,5 +34,6 @@ public class StatsController {
         }
 
         TextController.println("Today's likes on post \"" + postID + "\"were: " + Database.Loader.getNumberOfLikeStats(postID));
+        TextController.println("Today's views on post \"" + postID + "\"were: " + Database.Loader.getViews(postID));
     }
 }

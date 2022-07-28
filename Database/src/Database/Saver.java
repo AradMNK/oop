@@ -106,7 +106,15 @@ public class Saver {
 
     }
 
+    public static int newMessageAndID(String sender, String originalSender, LocalDateTime now, String line, int replyMsgID) {
+        return 0; //the new ID for all direct messages between the two
+    }
+
     public static void addToBlocklist(String blocker, String blocked) {
 
+    }
+
+    public static int createGroup(String ownerUsername) {
+        return 0; //the new ID for group
     }
 }

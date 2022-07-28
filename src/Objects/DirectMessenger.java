@@ -1,5 +1,6 @@
 package Objects;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class DirectMessenger {
@@ -26,4 +27,9 @@ public class DirectMessenger {
     public void setUser(User user) {this.user = user;}
 
     public ArrayList<Message> getShownMessages() {return ShownMessages;}
+
+    public void newDirectMessengerID(LocalDateTime dateTime, String message, int replyID){
+        directID.setHandle(Database.Saver.newMessageAndID(user.getUsername(), recipient.getUsername(),
+                dateTime, message, replyID));
+    }
 }

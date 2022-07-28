@@ -7,8 +7,11 @@ import Objects.Post;
 import Objects.User;
 import Objects.UserType;
 
+import java.util.Map;
+
 public class FeedController {
-    private static final int overlineCount = 15;
+    private static final int overlineCount = 15, ellipsisCount = 20;
+    private static final String ellipsis = "...";
 
     public static void show(){
         if (Loginner.loginState == LoginState.SIGN_OUT){
@@ -23,9 +26,10 @@ public class FeedController {
 
     public static void showMenu(User user){
         boolean hasPost = Database.Loader.userHasPostFeed(user.getUsername()),
-                hasComment = Database.Loader.userHasCommentFeed(user.getUsername());
+                hasComment = Database.Loader.userHasCommentFeed(user.getUsername()),
+                hasLike = Database.Loader.userHasLikeFeed(user.getUsername());
 
-        if (!hasPost && !hasComment) {
+        if (!hasPost && !hasComment && !hasLike) {
             TextController.println("Your feed is empty, for now.");
             return;
         }
@@ -33,6 +37,7 @@ public class FeedController {
         TextController.println("Please choose:");
         if (hasPost)  TextController.println("1. New posts from followings");
         if (hasComment) TextController.println("2. New comments on your posts");
+        if (hasLike) TextController.println("3. New likes on your posts");
 
         int choice;
 
@@ -41,7 +46,20 @@ public class FeedController {
 
         if (choice == 1 && hasPost) showPosts(user);
         else if (choice == 2 && hasComment) showComments(user);
+        else if (choice == 3 && hasLike) showLikes(user);
         else TextController.println("Please enter a valid number.");
+    }
+
+    private static void showLikes(User user) {
+        for (Map.Entry<Post, Integer> entry : user.getFeed().getLikers().entrySet()){
+            TextController.println("[" + entry.getKey().getPostID() + "] (" + ellipsis(entry.getKey().getDescription())
+                    + "): " + entry.getValue() + " likes");
+        }
+    }
+
+    private static String ellipsis(String description) {
+        return (description.length() > ellipsisCount + ellipsis.length()) ?
+                description.substring(0, ellipsisCount) + ellipsis : description;
     }
 
     private static void showComments(User user) {

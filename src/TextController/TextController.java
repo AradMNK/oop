@@ -3,6 +3,8 @@ package TextController;
 import Login.Creator;
 import Login.LoginState;
 import Login.Loginner;
+import Objects.Group;
+import Objects.SaveHandle;
 import Objects.UserType;
 
 import java.util.Scanner;
@@ -71,7 +73,17 @@ public class TextController {
     }
 
     private static void newGroup() {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            TextController.println("Please login before trying to create a group chat.");
+            return;
+        }
 
+        Group group = new Group();
+        group.setGroupID(new SaveHandle(Database.Saver.createGroup(Loginner.loginnedUser.getUsername())));
+        TextController.println("Please enter a name for your group chat:");
+        group.setName(TextController.getLine());
+
+        GroupController.attemptEntrance(group);
     }
 
     private static void unblock(String username) {
