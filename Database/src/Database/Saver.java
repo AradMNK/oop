@@ -9,14 +9,10 @@ import java.sql.SQLException;
 
 public class Saver {
     public static void saveLogin(String username, String hashPass, String name, LocalDate dateJoined, String userType){
-        //save stuff but set every other thing in user label to null
-        //remember that userType=="business" users need to have more tables created. You will see in the other functions
         Connector.queryWithoutResult("INSERT INTO users (username, hashPass, name, date, type) VALUES ('" + username +"', '" + hashPass + "', '" + name + "', '" + dateJoined + "', '" + userType + "');");
     }
 
     public static void setUserName(String username, String value) {
-        //FIXME whenever I write set"User"Something it means it is guaranteed that the user exists
-        // if you do everything else correctly
         Connector.queryWithoutResult("UPDATE users SET name = '" + value + "' WHERE username = '" + username + "';");
     }
 
@@ -31,8 +27,6 @@ public class Saver {
 
     public static int addToPosts(String username, String name, LocalDateTime now, String description,
                                  String postType) {
-        //create a table UNIQUE to every username
-        //when creating a new account and name it something related to that and use that table now
         //formats date and time
         DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = now.format(formatObj);
@@ -50,11 +44,10 @@ public class Saver {
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
-        return 0; //return the handle
+        return 0;
     }
 
     public static int addToComments(String username, String name, LocalDateTime now, int postID, String msg) {
-        //same as above
         //formats date and time
         DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = now.format(formatObj);
@@ -72,7 +65,7 @@ public class Saver {
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
-        return 0; //return the handle
+        return 0;
     }
 
     public static void addToFollowers(String usernameFollower, String usernameFollowed) {
@@ -80,8 +73,6 @@ public class Saver {
     }
 
     public static int addToLikes(int postID, String username) {
-        //create a new table for a postID's likes and store usernames in it. THAT'S IT. nothing more nothing less
-        //and it has to be upon creation. Here u can change it.
         //adds the like to the likes
         Connector.queryWithoutResult("INSERT INTO likes (postID, username) VALUES (" + postID + ", '" + username + "');");
 
@@ -95,7 +86,7 @@ public class Saver {
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
-        return 0; // the AI handle
+        return 0;
     }
 
     public static void updateFeedsFromLike(String username, int ID) {
