@@ -1,6 +1,10 @@
 package Builder;
 
+import Objects.BusinessUser;
 import Objects.User;
+import Objects.UserType;
+
+import java.time.LocalDate;
 
 public class UserBuilder {
     public static User getUserFromDatabase(String username){
@@ -8,15 +12,24 @@ public class UserBuilder {
     }
 
     public static User getUserFromDatabaseFull(String username){
-        //FIXME this has EVERYTHING but the pointers to other things are limited
+        User user = getUserFromDatabase(username);
+        //aaaaa
 
-        return new User();
+        return user;
     }
 
     public static User getUserFromDatabaseDetailsOnly(String username){
-        //FIXME this only has details
-
-        return new User();
+        String[] details = Database.Loader.getUserDetails(username);
+        User user;
+        if (details[4].equals(UserType.BUSINESS.toString())) user = new BusinessUser();
+        else user = new User();
+        user.setUsername(username);
+        int i = 0;
+        user.setName(details[i++]);
+        user.setBio(details[i++]);
+        user.setSubtitle(details[i++]);
+        user.setDateJoined(LocalDate.parse(details[i]));
+        return user;
     }
 
     public static User getUserFromDatabaseWithPosts(String username){

@@ -10,6 +10,7 @@ public enum CommandType {
 
     DETAILS("details"),
     FEED("feed"),
+    UNREAD("unread"),
     STATS("stats"),
 
     POST("post"),
