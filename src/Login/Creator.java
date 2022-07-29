@@ -51,7 +51,18 @@ public class Creator {
             return;
         }
 
-        Database.Saver.saveLogin(user, Hasher.hash(pass), name, LocalDate.now(), userType.toString());
+        int securityQuestionNum;
+        try {securityQuestionNum = TextController.getSecurityQuestionNumber();}
+        catch (Exception e) {
+            TextController.println("You did not type a number. Please try again with /" + CommandType.CREATE_ACC);
+            return;
+        }
+        TextController.println("Type in your answer: ");
+        String answer = TextController.getLine();
+        TextController.println("You have typed in \"" + answer + "\"");
+
+        Database.Saver.saveLogin
+                (user, Hasher.hash(pass), name, LocalDate.now(), userType.toString(), securityQuestionNum, answer);
 
         Loginner.loginnedUser = new User();
         Loginner.loginnedUser.setUsername(user);

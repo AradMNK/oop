@@ -8,7 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Saver {
-    public static void saveLogin(String username, String hashPass, String name, LocalDate dateJoined, String userType){
+    public static void saveLogin(String username, String hashPass, String name, LocalDate dateJoined, String userType,
+                                 int securityQuestionNum, String securityQuestionAnswer){
         Connector.queryWithoutResult
                 ("INSERT INTO users (username, hashPass, name, date, type) VALUES ('"
                         + username +"', '" + hashPass + "', '" + name + "', '" + dateJoined + "', '" + userType + "');");
