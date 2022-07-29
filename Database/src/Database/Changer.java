@@ -64,42 +64,6 @@ public class Changer {
         Connector.queryWithoutResult("DELETE FROM groups WHERE groupID = " + groupID + ";");
     }
 
-    public static void removeFromGroup(String username, int groupID) {
-        //declares a string for the members
-        String members;
-
-        //finds the members
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            resultSet = connection.prepareStatement("SELECT members FROM groups WHERE groupID = " + groupID + ";").executeQuery();
-
-            //checks if the resultSet is empty
-            if (resultSet.next()){
-                resultSet.next();
-                members = resultSet.getString(1);
-
-                //removes the user
-                members.replaceAll(username, "");
-
-                //checks for ,
-                if (members.charAt(0) == ','){
-                    members = members.substring(1);
-                }
-                if (members.charAt(members.length()-1) == ','){
-                    members = members.substring(members.length()-1);
-                }
-                members.replaceAll(",,", ",");
-
-                //removes the member from group
-                Connector.queryWithoutResult("UPDATE groups SET members = '" + members
-                                                    + "' WHERE groupID = " + groupID + ";");
-            }
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
-    }
-
     public static void changeGroupJoiner(/*int handle, */String newID) {
         //Connector.queryWithoutResult("UPDATE groups SET joinID = '" + newID +"' WHERE groupID = " + handle + ";");
         //FIXME

@@ -118,41 +118,19 @@ public class Saver {
                 ("INSERT INTO feed (username, ID, type) VALUES ('" + username + "', " + ID + ", comment);");
     }
 
-    public static void addToMessages(int directID, String sender, String originalSender,
+    public static void addToMessages(String sender, String receiver, String originalSender,
                                      LocalDateTime now, String line, int replyMsgID) {
         //formats date and time
         DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = now.format(formatObj);
 
-        //declares the receiver
-        String receiver = null;
-
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            resultSet = connection.prepareStatement("SELECT username1, username2 FROM directs WHERE directID = "
-                                                        + directID + ";").executeQuery();
-
-            //checks if the resultSet is empty
-            if (resultSet.next()){
-                if (sender.equals(resultSet.getString(1))){
-                    receiver = resultSet.getString(2);
-                }
-                if (sender.equals(resultSet.getString(2))){
-                    receiver = resultSet.getString(1);
-                }
-
-                Connector.queryWithoutResult("INSERT INTO directmessages (sender, receiver, message, date"
-                                                    + ", replyMessageID, originalSender) VALUES '" + sender + "', '"
-                                                    + receiver + "', '" + line + "', '" + formattedDate + "', "
-                                                    + replyMsgID + ", '" + originalSender + "';");
-            }
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
+        Connector.queryWithoutResult("INSERT INTO directmessages (sender, receiver, message, date"
+                + ", replyMessageID, originalSender) VALUES '" + sender + "', '"
+                + receiver + "', '" + line + "', '" + formattedDate + "', "
+                + replyMsgID + ", '" + originalSender + "';");
     }
 
-    public static int newMessageAndID(String sender, String originalSender, LocalDateTime now, String line, int replyMsgID) {
+    public static int newMessageAndID(String sender, String receiver, LocalDateTime now, String line, int replyMsgID) {
         //FIXME
         return 0; //the new ID for all direct messages between the two
     }
