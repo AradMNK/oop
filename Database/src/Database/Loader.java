@@ -183,6 +183,29 @@ public class Loader {
         return name;
     }
 
+    public static String[] getUserDetails (String username){
+        //declares a string array to store the details
+        String[] details = new String[4];
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT bio, subtitle, date, type FROM users WHERE username = '"
+                                                        + username + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                for (int i = 0; i < 4; i++){
+                    details[i] = resultSet.getString(i+1);
+                }
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return details;
+    }
+
     public static boolean postIsAd(int postID) {
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
@@ -482,6 +505,23 @@ public class Loader {
     }
 
     public static int getGroupID(String joiner) {
-        return 0;
+        //declares the groupID
+        int groupID = 0;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT groupID FROM groups WHERE joinID = '"
+                                                        + joiner + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                groupID = resultSet.getInt(1);
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return groupID;
     }
 }
