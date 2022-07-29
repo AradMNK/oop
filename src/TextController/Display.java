@@ -1,12 +1,11 @@
 package TextController;
 
+import Builder.GroupBuilder;
 import Builder.PostBuilder;
 import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
 import Objects.*;
-
-import javax.swing.event.TreeWillExpandListener;
 
 public class Display {
     private static final int overlineCount = 15;
@@ -165,16 +164,21 @@ public class Display {
 
     private static void showUnreadUsernames(String[] usernames) {
         TextController.println("You have unread direct messages from: ");
-        writeUsers(usernames);
+        for (String username : usernames) {
+            TextController.println(Database.Loader.getUserName(username) + " [@" + username + "] ("
+                    + Database.Loader.getUnreadCountForUsername(Loginner.loginnedUser.getUsername(), username) + ")");
+        }
         TextController.println("Use /" + CommandType.DM + " (username) to see them.");
     }
 
     private static void showUnreadGroups(int[] groupIDs) {
         TextController.println("You have unread message from groups: ");
-        Group[] groups = new Group[groupIDs.length];
-       // for (groups :) {
-
-        //}
-        TextController.println("Use /" + CommandType.DM + " (username) to see them.");
+        Group group;
+        for (int groupID : groupIDs) {
+            group = GroupBuilder.getGroupFromDatabase(groupID);
+            TextController.println(group.getName() + " [" + groupID + "] ("
+                    + Database.Loader.getUnreadCountForGroupID(Loginner.loginnedUser.getUsername(), groupID) + ")");
+        }
+        TextController.println("Use /" + CommandType.GROUPS + " to see all groups and enter one if needed.");
     }
 }

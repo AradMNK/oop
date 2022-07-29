@@ -9,7 +9,7 @@ public class AdRecommender {
     public static Integer[] recommendAd(){
         final HashSet<Integer> likedPostsOfFollowers = new HashSet<>();
 
-        for (String followerUsername: Loginner.loginnedUser.getFollowers())
+        for (String followerUsername: Loginner.loginnedUser.getFollowings())
             likedPostsOfFollowers.addAll(Database.Loader.getLikedAds(followerUsername));
 
         likedPostsOfFollowers.removeIf(Database.Loader.getLikedAds(Loginner.loginnedUser.getUsername())::contains);

@@ -8,25 +8,23 @@ import java.util.*;
 public class UserRecommender {
     private static final int NUMBER_OF_RECOMMENDED_USERS = 3;
 
-    private final HashSet<User> followerOfFollowers = new HashSet<>();
-
     public static String[] recommendUser(){
-        UserRecommender userRecommender = new UserRecommender();
+        HashSet<User> followerOfFollowers = new HashSet<>();
 
-        for (String followerUsername: Loginner.loginnedUser.getFollowers()){
-            User user = UserBuilder.getUserFromDatabaseWithFollowers(followerUsername);
-            for (String followerUsername2 : user.getFollowers()){
-                userRecommender.followerOfFollowers.add(UserBuilder.getUserFromDatabaseWithFollowers(followerUsername2));
+        for (String followerUsername: Loginner.loginnedUser.getFollowings()){
+            User user = UserBuilder.getUserFromDatabaseWithFollowings(followerUsername);
+            for (String followerUsername2 : user.getFollowings()){
+                followerOfFollowers.add(UserBuilder.getUserFromDatabaseWithFollowings(followerUsername2));
             }
         }
 
-        userRecommender.followerOfFollowers.removeIf(user -> Loginner.loginnedUser.getFollowers().contains(user.getUsername()));
+        followerOfFollowers.removeIf(user -> Loginner.loginnedUser.getFollowings().contains(user.getUsername()));
 
-        User[] candidateUsernames = new User[userRecommender.followerOfFollowers.size()];
-        Integer[] scores = new Integer[userRecommender.followerOfFollowers.size()];
+        User[] candidateUsernames = new User[followerOfFollowers.size()];
+        Integer[] scores = new Integer[followerOfFollowers.size()];
         int i = 0;
 
-        for (User candidate : userRecommender.followerOfFollowers) {
+        for (User candidate : followerOfFollowers) {
             int score = 0;
             for (String followedByUser : Loginner.loginnedUser.getFollowers())
                 if (candidate.getFollowers().contains(followedByUser)) score++;

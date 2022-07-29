@@ -633,4 +633,12 @@ public class Loader {
         finally {Connector.connector.disconnect();}
         return unreadGroups;
     }
+
+    public static int getUnreadCountForUsername(String forUsername, String username) {
+        return 0;
+    }
+
+    public static int getUnreadCountForGroupID(String forUsername, int groupID) {
+        return 0;
+    }
 }
