@@ -49,15 +49,14 @@ public class User {
 
     public void post(String description){
         LocalDateTime dateTime = LocalDateTime.now();
-        int handle = Database.Saver.addToPosts(username, name, dateTime,
-                description, getUserType().toString());
+        int handle = Database.Saver.addToPosts(username, dateTime, description, getUserType().toString());
         posts.add(new Post(handle, description, dateTime, this));
         for (String usernames: followers)
             Database.Saver.updateFeedsFromPost(usernames, handle);
     }
 
     public void comment(int postID, String msg){
-        int handle = Database.Saver.addToComments(username, name, LocalDateTime.now(), postID, msg);
+        int handle = Database.Saver.addToComments(username, LocalDateTime.now(), postID, msg);
         for (String usernames: followers)
             Database.Saver.updateFeedsFromComment(usernames, handle);
     }

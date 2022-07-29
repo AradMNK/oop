@@ -31,8 +31,7 @@ public class Saver {
     }
 
 
-    public static int addToPosts(String username, String name, LocalDateTime now, String description,
-                                 String postType) {
+    public static int addToPosts(String username, LocalDateTime now, String description, String postType) {
         //declares the postID
         int postID = 0;
 
@@ -63,7 +62,7 @@ public class Saver {
         return postID;
     }
 
-    public static int addToComments(String username, String name, LocalDateTime now, int postID, String msg) {
+    public static int addToComments(String username, LocalDateTime now, int postID, String msg) {
         //declares the commentID
         int commentID = 0;
 
@@ -129,11 +128,6 @@ public class Saver {
                 + ", replyMessageID, originalSender) VALUES '" + sender + "', '"
                 + receiver + "', '" + line + "', '" + formattedDate + "', "
                 + replyMsgID + ", '" + originalSender + "';");
-    }
-
-    public static int newMessageAndID(String sender, String receiver, LocalDateTime now, String line, int replyMsgID) {
-        //FIXME
-        return 0; //the new ID for all direct messages between the two
     }
 
     public static void addToBlocklist(String blocker, String blocked) {
