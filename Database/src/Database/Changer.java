@@ -96,6 +96,7 @@ public class Changer {
     public static void removeParticipant(int handle, String username) {
         //declares a string for the members
         String members;
+        String newMembers;
 
         //finds the members
         Connection connection = Connector.connector.connect();
@@ -109,7 +110,8 @@ public class Changer {
                 members = resultSet.getString(1);
 
                 //removes the user
-                members.replaceAll(username, "");
+                newMembers = members.replaceAll(username, "");
+                members = newMembers;
 
                 //checks for ,
                 if (members.charAt(0) == ','){
@@ -118,7 +120,8 @@ public class Changer {
                 if (members.charAt(members.length()-1) == ','){
                     members = members.substring(members.length()-1);
                 }
-                members.replaceAll(",,", ",");
+                newMembers = members.replaceAll(",,", ",");
+                members = newMembers;
 
                 //removes the member from group
                 Connector.queryWithoutResult("UPDATE groups SET members = '" + members
@@ -132,6 +135,7 @@ public class Changer {
     public static void removeFromBanList(int handle, String username) {
         //declares a string for the ban list
         String banned;
+        String newBanned;
 
         //finds the members
         Connection connection = Connector.connector.connect();
@@ -145,7 +149,8 @@ public class Changer {
                 banned = resultSet.getString(1);
 
                 //removes the user
-                banned.replaceAll(username, "");
+                newBanned = banned.replaceAll(username, "");
+                banned = newBanned;
 
                 //checks for ,
                 if (banned.charAt(0) == ','){
@@ -154,7 +159,8 @@ public class Changer {
                 if (banned.charAt(banned.length()-1) == ','){
                     banned = banned.substring(banned.length()-1);
                 }
-                banned.replaceAll(",,", ",");
+                newBanned = banned.replaceAll(",,", ",");
+                banned = newBanned;
 
                 //removes the member from group
                 Connector.queryWithoutResult("UPDATE groups SET banList = '" + banned
