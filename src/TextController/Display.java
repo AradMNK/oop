@@ -6,6 +6,8 @@ import Login.LoginState;
 import Login.Loginner;
 import Objects.*;
 
+import javax.swing.event.TreeWillExpandListener;
+
 public class Display {
     private static final int overlineCount = 15;
 
@@ -141,5 +143,38 @@ public class Display {
         TextController.println("(" + comment.getDate() + ") "
                 + comment.getCommenter().getName() + "[@" + comment.getCommenter().getUsername() + "]:" );
         TextController.println(comment.getMsg());
+    }
+
+    public static void unread() {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            TextController.println("Please sign in before trying to see your unread messages.");
+            return;
+        }
+
+        int[] groups = Database.Loader.getUnreadGroups(Loginner.loginnedUser.getUsername());
+        String[] usernames = Database.Loader.getUnreadUsers(Loginner.loginnedUser.getUsername());
+
+        if (groups.length == 0 && usernames.length == 0){
+            TextController.println("You have no unread messages! For now.");
+            return;
+        }
+
+        if (groups.length != 0) showUnreadGroups(groups);
+        if (usernames.length != 0) showUnreadUsernames(usernames);
+    }
+
+    private static void showUnreadUsernames(String[] usernames) {
+        TextController.println("You have unread direct messages from: ");
+        writeUsers(usernames);
+        TextController.println("Use /" + CommandType.DM + " (username) to see them.");
+    }
+
+    private static void showUnreadGroups(int[] groupIDs) {
+        TextController.println("You have unread message from groups: ");
+        Group[] groups = new Group[groupIDs.length];
+       // for (groups :) {
+
+        //}
+        TextController.println("Use /" + CommandType.DM + " (username) to see them.");
     }
 }

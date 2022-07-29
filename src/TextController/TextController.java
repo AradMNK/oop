@@ -43,6 +43,7 @@ public class TextController {
             case POSTS -> Display.accountPosts(command.getArgs());
 
             case FEED -> FeedController.show();
+            case UNREAD -> Display.unread();
             case FOLLOW -> follow(command.getArgs()[0]);
             case UNFOLLOW -> unfollow(command.getArgs()[0]);
             case FOLLOWERS -> Display.followers(command.getArgs());
@@ -107,6 +108,8 @@ public class TextController {
         println("Reloads you as the user with the same credentials if something isn't loading properly.");
         println("/" + CommandType.FEED);
         println("Use to enter feed mode and receive the latest notifications.");
+        println("/" + CommandType.UNREAD);
+        println("Use to see the chats where you have unread messages.");
         println("/" + CommandType.DETAILS + " (otherUsername)");
         println("Use with argument for another user or without argument for your own account to see details.");
         println("/" + CommandType.POSTS + " (otherUsername)");
