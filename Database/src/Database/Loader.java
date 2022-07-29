@@ -163,6 +163,26 @@ public class Loader {
         return likerUsernames;
     }
 
+    public static String getUserName (String username){
+        //declares the security question number
+        String name = null;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT name FROM users WHERE username = '" + username
+                                                        + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                name = resultSet.getString(1);
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return name;
+    }
+
     public static String[] getUserDetails (String username){
         //declares a string array to store the details
         String[] details = new String[5];
@@ -540,5 +560,13 @@ public class Loader {
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
         return false;
+    }
+
+    public static int[] getUnreadUsers (String username){
+        return new int[0];
+    }
+
+    public static int[] getUnreadGroups (String username){
+        return new int[0];
     }
 }
