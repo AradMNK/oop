@@ -8,7 +8,6 @@ public class User {
     private String name, username, subtitle, bio;
     private Handle pfp, theme;
     private Feed feed;
-    private final HashSet<DirectMessenger> dms = new HashSet<>();
     private final HashSet<Post> posts = new HashSet<>();
     private final HashSet<String> blocklist = new HashSet<>(), followers = new HashSet<>(), followings = new HashSet<>();
     private final HashSet<Group> groups = new HashSet<>();
@@ -32,7 +31,6 @@ public class User {
     public Handle getTheme() {return theme;}
     public void setTheme(Handle theme) {this.theme = theme;}
 
-    public HashSet<DirectMessenger> getDms() {return dms;}
     public HashSet<Post> getPosts() {return posts;}
     public HashSet<String> getBlocklist() {return blocklist;}
     public HashSet<String> getFollowers() {return followers;}

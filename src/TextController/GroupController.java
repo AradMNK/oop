@@ -22,6 +22,7 @@ public class GroupController {
     }
 
     private static void showPreviousChats() {
+        Database.Changer.userSees(Loginner.loginnedUser.getUsername(), group.getGroupID().getHandle());
         for (GroupMessage message : group.getShownMessages()) {
             if (message.getReplyToID().getHandle() != 0) { //it's a replied message
                 String repliedGroupMessage = Database.Loader.getGroupMessageContent(message.getReplyToID().getHandle());
@@ -118,7 +119,6 @@ public class GroupController {
         Database.Changer.addUserToGroup(username, group.getGroupID().getHandle());
         group.getParticipants().add(UserBuilder.getUserFromDatabase(username));
     }
-
     private static void ban(String username) {
         if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
             TextController.println("You are not the group owner to be allowed to do this.");
@@ -137,7 +137,6 @@ public class GroupController {
             }
         }
     }
-
     private static void unban(String username) {
         if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
             TextController.println("You are not the group owner to be allowed to do this.");

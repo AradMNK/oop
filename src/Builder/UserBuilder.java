@@ -12,8 +12,9 @@ public class UserBuilder {
     }
 
     public static User getUserFromDatabaseFull(String username){
-        User user = getUserFromDatabase(username);
-        //aaaaa
+        User user = getUserFromDatabaseWithFollowers(username);
+        user.setFeed(FeedBuilder.getFeedFromDatabase(username));
+        //user.getBlocklist()
 
         return user;
     }

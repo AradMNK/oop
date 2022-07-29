@@ -41,6 +41,7 @@ public class DmController {
     }
 
     private static void showPreviousChats() {
+        Database.Changer.userSees(dm.getUser().getUsername(), dm.getRecipient().getUsername());
         for (Message message : dm.getShownMessages()) {
             if (message.getReplyToID().getHandle() != 0) { //it's a replied message
                 String repliedMessage = Database.Loader.getDirectMessageContent(message.getReplyToID().getHandle());

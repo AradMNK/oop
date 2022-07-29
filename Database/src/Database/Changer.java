@@ -167,4 +167,12 @@ public class Changer {
     public static void changePassword(String username, String hash) {
         Connector.queryWithoutResult("UPDATE users SET hashPass = '" + hash + "' WHERE username = " + username + ";");
     }
+
+    public static void userSees(String username, int groupID) {
+
+    }
+
+    public static void userSees(String forUsername, String usernameSender) {
+
+    }
 }
