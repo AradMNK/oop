@@ -447,7 +447,7 @@ public class Loader {
         return false;
     }
 
-    public static boolean groupJoinedExists(String groupJoiner) {
+    public static boolean groupJoinerExists(String groupJoiner) {
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
@@ -523,5 +523,13 @@ public class Loader {
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
         return groupID;
+    }
+
+    public static int getSecurityQuestionNumber(String username) {
+        return 0;
+    }
+
+    public static boolean doesSecurityQuestionAnswerMatch(String username, String answer) {
+        return true;
     }
 }

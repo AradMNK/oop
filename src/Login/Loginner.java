@@ -66,4 +66,28 @@ public class Loginner {
 
         loginnedUser = UserBuilder.getUserFromDatabaseFull(loginnedUser.getUsername());
     }
+
+    public static void forgotPassword(String username) {
+        if (!Database.Loader.usernameExists(username)){
+            TextController.println("Username [@" + username + "] does not exist.");
+            return;
+        }
+
+        int secQuestionNum = Database.Loader.getSecurityQuestionNumber(username);
+
+        SecurityQuestion securityQuestion = SecurityQuestion.getSecurityQuestionByNumber(secQuestionNum);
+        TextController.println("Please answer the following question:");
+        TextController.println("\"" + securityQuestion + "\"");
+
+        String answer = TextController.getLine();
+        TextController.println("You have typed in \"" + answer + "\".");
+
+        if (!Database.Loader.doesSecurityQuestionAnswerMatch(username, Hasher.hash(answer))){
+            TextController.println("Answer does not match. Consider the fact that the answers are case sensitive.");
+            return;
+        }
+        TextController.println("Please enter your new password:");
+        String password = TextController.getLine();
+        Database.Changer.changePassword(username, Hasher.hash(password));
+    }
 }

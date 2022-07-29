@@ -2,6 +2,7 @@ package TextController;
 
 public enum CommandType {
     LOGIN("login"),
+    FORGOT("forgot"),
     CREATE_ACC("create"),
     EDIT_ACC("edit"),
     RELOAD("reload"),

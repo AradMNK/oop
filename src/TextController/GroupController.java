@@ -87,18 +87,19 @@ public class GroupController {
         TextController.println("Group joiner is: " + group.getGroupJoiner());
     }
 
-    private static void revoke(String id) {
+    private static void revoke(String joiner) {
         if (!group.getOwner().getUsername().equals(Loginner.loginnedUser.getUsername())){
             TextController.println("You are not the group owner to be allowed to do this.");
             return;
         }
 
-        if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
+        if (Database.Loader.groupJoinerExists(joiner)){
             TextController.println("Joining ID already exists. Please choose a new one.");
             return;
         }
 
-        Database.Changer.changeGroupJoiner(id);
+        Database.Changer.changeGroupJoiner(group.getGroupID().getHandle(), joiner);
+        group.setGroupJoiner(joiner);
     }
 
     private static void add(String username) {

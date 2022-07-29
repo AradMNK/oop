@@ -24,6 +24,7 @@ public class TextController {
     private static void actOnCommand(Command command){
         switch (command.getCommandType()){
             case LOGIN -> Loginner.attemptLogin(command.getArgs());
+            case FORGOT -> Loginner.forgotPassword(command.getArgs()[0]);
             case CREATE_ACC -> Creator.attemptCreate(command.getArgs());
             case EDIT_ACC -> UserEditor.edit();
             case SIGNOUT -> Loginner.signout();
@@ -72,7 +73,7 @@ public class TextController {
             return;
         }
 
-        if (!Database.Loader.groupJoinedExists(joiner)){
+        if (!Database.Loader.groupJoinerExists(joiner)){
             TextController.println("Group joiner \"" + joiner + "\" does not exist.");
             return;
         }
@@ -94,6 +95,8 @@ public class TextController {
         println("Brings up this menu.");
         println("/" + CommandType.LOGIN + " (username) (password)");
         println("Use this to login.");
+        println("/" + CommandType.FORGOT + " (username)");
+        println("Use this to login using your security question and change your password.");
         println("/" + CommandType.SIGNOUT);
         println("Use this to sign out.");
         println("/" + CommandType.CREATE_ACC + " (username) (password) (name)");
@@ -204,7 +207,7 @@ public class TextController {
         group.setName(TextController.getLine());
         TextController.println("Please enter a joining ID for inviting people.");
         group.setGroupJoiner(TextController.getLine());
-        if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
+        if (Database.Loader.groupJoinerExists(group.getGroupJoiner())){
             TextController.println("Joining ID already exists. Please choose a new one. Aborting command /"
                     + CommandType.NEW_GROUP);
             return;

@@ -59,10 +59,11 @@ public class Creator {
         }
         TextController.println("Type in your answer: ");
         String answer = TextController.getLine();
-        TextController.println("You have typed in \"" + answer + "\"");
+        TextController.println("You have typed in \"" + answer + "\". Remember that.");
 
         Database.Saver.saveLogin
-                (user, Hasher.hash(pass), name, LocalDate.now(), userType.toString(), securityQuestionNum, answer);
+                (user, Hasher.hash(pass), name, LocalDate.now(), userType.toString(), securityQuestionNum,
+                        Hasher.hash(answer));
 
         Loginner.loginnedUser = new User();
         Loginner.loginnedUser.setUsername(user);
