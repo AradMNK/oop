@@ -145,7 +145,6 @@ public class Loader {
                 //gets the number of likes
                 resultSet.next();
                 numberOfLikes = Integer.parseInt(resultSet.getString(1));
-                resultSet = null;
 
                 //declares the array and gets the usernames
                 likerUsernames = new String[numberOfLikes];
@@ -247,7 +246,7 @@ public class Loader {
         try {
             //finds the messages username1 has sent to username2
             resultSet = connection.prepareStatement("SELECT * FROM directmessages WHERE sender = '" + username1
-                                                        + "' AND reciever = '" + username2 + "';").executeQuery();
+                                                        + "' AND receiver = '" + username2 + "';").executeQuery();
 
             //checks if the resultSet is empty
             if (resultSet.next()){
@@ -255,9 +254,8 @@ public class Loader {
             }
 
             //finds the messages username2 has sent to username1
-            resultSet = null;
             resultSet = connection.prepareStatement("SELECT * FROM directmessages WHERE sender = '" + username2
-                                                        + "' AND reciever = '" + username1 + "';").executeQuery();
+                                                        + "' AND receiver = '" + username1 + "';").executeQuery();
 
             //checks if the resultSet is empty
             if (resultSet.next()){
@@ -294,7 +292,7 @@ public class Loader {
 
     public static String getDirectMessageContent (int handle){
         //declares the message found in the result set
-        String message = null;
+        String message;
 
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
@@ -484,7 +482,7 @@ public class Loader {
 
     public static HashSet<Integer> getLikedAds(String username) {
         //declares a HashSet to store the ads
-        HashSet<Integer> likedAds = new HashSet<Integer>();
+        HashSet<Integer> likedAds = new HashSet<>();
 
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
