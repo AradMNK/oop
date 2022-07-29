@@ -72,7 +72,7 @@ public class TextController {
             return;
         }
 
-        if (!Database.Loader.groupJoinedExists(joiner)){
+        if (!Database.Loader.groupJoinerExists(joiner)){
             TextController.println("Group joiner \"" + joiner + "\" does not exist.");
             return;
         }
@@ -204,7 +204,7 @@ public class TextController {
         group.setName(TextController.getLine());
         TextController.println("Please enter a joining ID for inviting people.");
         group.setGroupJoiner(TextController.getLine());
-        if (Database.Loader.groupJoinedExists(group.getGroupJoiner())){
+        if (Database.Loader.groupJoinerExists(group.getGroupJoiner())){
             TextController.println("Joining ID already exists. Please choose a new one. Aborting command /"
                     + CommandType.NEW_GROUP);
             return;

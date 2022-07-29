@@ -64,14 +64,13 @@ public class Changer {
         Connector.queryWithoutResult("DELETE FROM groups WHERE groupID = " + groupID + ";");
     }
 
-    public static void changeGroupJoiner(/*int handle, */String newID) {
-        //Connector.queryWithoutResult("UPDATE groups SET joinID = '" + newID +"' WHERE groupID = " + handle + ";");
-        //FIXME
+    public static void changeGroupJoiner(int handle, String newID) {
+        Connector.queryWithoutResult("UPDATE groups SET joinID = '" + newID +"' WHERE groupID = " + handle + ";");
     }
 
     public static void addUserToGroup(String username, int handle) {
         //declares group members
-        String members = null;
+        String members;
 
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
@@ -159,24 +158,6 @@ public class Changer {
                 //removes the member from group
                 Connector.queryWithoutResult("UPDATE groups SET banList = '" + banned
                         + "' WHERE groupID = " + handle + ";");
-            }
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
-    }
-
-    public static void removeFromGroups(String username, int handle) {
-        //checks if there's such group with this admin
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            resultSet = connection.prepareStatement("SELECT * FROM groups WHERE groupID = " + handle
-                                                        + " AND admin = '" + username + "';").executeQuery();
-
-            //checks if the resultSet is empty
-            if (resultSet.next()){
-                Connector.queryWithoutResult("DELETE FROM groups WHERE groupID = " + handle
-                                                    + " AND admin = '" + username + "';");
             }
         }
         catch (SQLException e) {e.printStackTrace();}

@@ -447,7 +447,7 @@ public class Loader {
         return false;
     }
 
-    public static boolean groupJoinedExists(String groupJoiner) {
+    public static boolean groupJoinerExists(String groupJoiner) {
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
