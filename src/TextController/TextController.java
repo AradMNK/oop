@@ -335,6 +335,7 @@ public class TextController {
 
         while (!command.getCommandType().equals(CommandType.EXIT)){
             if (!line.equals("")) actOnCommand(command);
+            println("Enter a new command:");
             try {line = getLine(); if (!line.equals("")) command = new Command(line);}
             catch (CommandException e){
                 TextController.println("What you just typed in was not defined." +
