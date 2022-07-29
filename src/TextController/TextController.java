@@ -1,9 +1,11 @@
 package TextController;
 
+import Builder.GroupBuilder;
 import Builder.PostBuilder;
 import Login.Creator;
 import Login.LoginState;
 import Login.Loginner;
+import Login.SecurityQuestion;
 import Objects.Group;
 import Objects.Post;
 import Objects.SaveHandle;
@@ -65,12 +67,26 @@ public class TextController {
     }
 
     private static void attemptJoin(String joiner) {
+        if (Loginner.loginState == LoginState.SIGN_OUT){
+            TextController.println("Please sign in before trying to join a group.");
+            return;
+        }
+
         if (!Database.Loader.groupJoinedExists(joiner)){
             TextController.println("Group joiner \"" + joiner + "\" does not exist.");
             return;
         }
 
         int id = Database.Loader.getGroupID(joiner);
+
+        for (Group group: Loginner.loginnedUser.getGroups())
+            if (group.getGroupID().getHandle() == id){
+                TextController.println("You have already joined this group!");
+                return;
+            }
+
+        Loginner.loginnedUser.getGroups().add(GroupBuilder.getGroupFromDatabase(id));
+        Database.Changer.addUserToGroup(Loginner.loginnedUser.getUsername(), id);
     }
 
     private static void writeHelp() {
@@ -364,6 +380,15 @@ public class TextController {
         if (type == 1) return UserType.NORMAL;
         else if (type == 2) return UserType.BUSINESS;
         else return getUserType();
+    }
+
+    public static int getSecurityQuestionNumber() {
+        println("Choose a question by picking the number.");
+        SecurityQuestion.write();
+        int type = scanner.nextInt();
+        if (type <= SecurityQuestion.numOfQuestions() && type > 0)
+            return type;
+        else return getSecurityQuestionNumber();
     }
 
     public static void println(String message){System.out.println(message);}
