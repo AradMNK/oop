@@ -11,8 +11,9 @@ public class Saver {
     public static void saveLogin(String username, String hashPass, String name, LocalDate dateJoined, String userType,
                                  int securityQuestionNum, String securityQuestionAnswer){
         Connector.queryWithoutResult
-                ("INSERT INTO users (username, hashPass, name, date, type) VALUES ('"
-                        + username +"', '" + hashPass + "', '" + name + "', '" + dateJoined + "', '" + userType + "');");
+                ("INSERT INTO users (username, hashPass, name, date, questionID, answer, type) VALUES ('"
+                        + username +"', '" + hashPass + "', '" + name + "', '" + dateJoined + "', "
+                        + securityQuestionNum + ", '" + securityQuestionAnswer + "', '" + userType + "');");
     }
 
     public static void setUserName(String username, String value) {
