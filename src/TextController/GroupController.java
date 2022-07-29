@@ -69,6 +69,7 @@ public class GroupController {
                 case UNBAN -> unban(split[1]);
                 case ADD -> add(split[1]);
                 case REVOKE -> revoke(split[1]);
+                case JOINER -> showJoiner();
 
                 case REFRESH -> refresh();
                 case LEAVE -> {leave(); return true;}
@@ -80,6 +81,10 @@ public class GroupController {
         catch (ArrayIndexOutOfBoundsException e){
             if (line.startsWith("\\")) TextController.println("You need to provide an argument for " + line);}
         return false;
+    }
+
+    private static void showJoiner() {
+        TextController.println("Group joiner is: " + group.getGroupJoiner());
     }
 
     private static void revoke(String id) {
@@ -298,6 +303,7 @@ enum GroupCommand{
     UNBAN("\\unban"),
     ADD("\\add"),
     REVOKE("\\revoke"),
+    JOINER("\\joiner"),
 
     LEAVE("\\leave"),
 

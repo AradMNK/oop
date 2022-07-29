@@ -25,6 +25,7 @@ public enum CommandType {
     FOLLOWERS("followers"),
     FOLLOWINGS("followings"),
 
+    JOIN("join"),
     DM("dm"),
     BLOCK("block"),
     UNBLOCK("unblock"),

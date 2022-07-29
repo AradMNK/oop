@@ -480,4 +480,8 @@ public class Loader {
         finally {Connector.connector.disconnect();}
         return likedAds;
     }
+
+    public static int getGroupID(String joiner) {
+        return 0;
+    }
 }

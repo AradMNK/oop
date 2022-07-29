@@ -46,6 +46,7 @@ public class TextController {
             case FOLLOWINGS -> Display.followings(command.getArgs());
             case STATS -> StatsController.show(command.getArgs());
 
+            case JOIN -> attemptJoin(command.getArgs()[0]);
             case DM -> DmController.attemptEntrance(command.getArgs()[0]);
             case BLOCK -> block(command.getArgs()[0]);
             case UNBLOCK -> unblock(command.getArgs()[0]);
@@ -61,6 +62,15 @@ public class TextController {
 
             default -> println("No match for command /" + command.getCommandType());
         }
+    }
+
+    private static void attemptJoin(String joiner) {
+        if (!Database.Loader.groupJoinedExists(joiner)){
+            TextController.println("Group joiner \"" + joiner + "\" does not exist.");
+            return;
+        }
+
+        int id = Database.Loader.getGroupID(joiner);
     }
 
     private static void writeHelp() {
@@ -122,7 +132,9 @@ public class TextController {
                 + GroupCommand.DELETE + " (number of messages starting from 0 at the bottom),\n"
                 + GroupCommand.REFRESH + ", " + GroupCommand.REVOKE + ", " + GroupCommand.ADD + " (username), " + GroupCommand.LEAVE +
                 "\n" + GroupCommand.BAN + " (username [admin/owner only]), " + GroupCommand.UNBAN + " (username [admin/owner only]), "
-                + GroupCommand.EXIT + "\n" + "-".repeat(15));
+                + GroupCommand.JOINER + ", " + GroupCommand.EXIT + "\n" + "-".repeat(15));
+        println("/" + CommandType.JOIN + " (groupJoiner)");
+        println("Use this command to join a group via invite link.");
         println("/" + CommandType.NEW_GROUP);
         println("Use this command to create a new group where you are the owner/admin and enter in the details.");
         println("/" + CommandType.RECOMMEND_USER);
