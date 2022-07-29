@@ -32,6 +32,9 @@ public class Saver {
 
     public static int addToPosts(String username, String name, LocalDateTime now, String description,
                                  String postType) {
+        //declares the postID
+        int postID = 0;
+
         //formats date and time
         DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = now.format(formatObj);
@@ -47,15 +50,22 @@ public class Saver {
         try {
             resultSet = connection.prepareStatement
                     ("SELECT postID FROM posts ORDER BY postID DESC;").executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                postID = resultSet.getInt(1);
+            }
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
-        return 0;
+        return postID;
     }
 
     public static int addToComments(String username, String name, LocalDateTime now, int postID, String msg) {
+        //declares the commentID
+        int commentID = 0;
+
         //formats date and time
         DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDate = now.format(formatObj);
@@ -70,12 +80,16 @@ public class Saver {
         ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT commentID FROM comments ORDER BY commentID DESC;").executeQuery();
-            resultSet.next();
-            return resultSet.getInt(1);
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                commentID = resultSet.getInt(1);
+            }
         }
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
-        return 0;
+        return commentID;
     }
 
     public static void addToFollowers(String usernameFollower, String usernameFollowed) {
@@ -106,23 +120,80 @@ public class Saver {
 
     public static void addToMessages(int directID, String sender, String originalSender,
                                      LocalDateTime now, String line, int replyMsgID) {
+        //formats date and time
+        DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = now.format(formatObj);
 
+        //declares the receiver
+        String receiver = null;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT username1, username2 FROM directs WHERE directID = "
+                                                        + directID + ";").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                if (sender.equals(resultSet.getString(1))){
+                    receiver = resultSet.getString(2);
+                }
+                if (sender.equals(resultSet.getString(2))){
+                    receiver = resultSet.getString(1);
+                }
+
+                Connector.queryWithoutResult("INSERT INTO directmessages (sender, receiver, message, date"
+                                                    + ", replyMessageID, originalSender) VALUES '" + sender + "', '"
+                                                    + receiver + "', '" + line + "', '" + formattedDate + "', "
+                                                    + replyMsgID + ", '" + originalSender + "';");
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
     }
 
     public static int newMessageAndID(String sender, String originalSender, LocalDateTime now, String line, int replyMsgID) {
+        //FIXME
         return 0; //the new ID for all direct messages between the two
     }
 
     public static void addToBlocklist(String blocker, String blocked) {
-
+        Connector.queryWithoutResult("INSERT INTO block (blocker, blocked) VALUES '"
+                                            + blocker + "', '" + blocked + "';");
     }
 
     public static int createGroup(String ownerUsername, String name, String joiner) {
-        return 0; //the new ID for group
+        //declares the groupID
+        int groupID = 0;
+        Connector.queryWithoutResult("INSERT INTO groups (name, admin, joinID) VALUES '"
+                                            + name + "', '" + ownerUsername + "', '" + joiner + "';");
+
+        //gets the handle
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT groupID FROM groups ORDER BY groupID DESC;").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                groupID = resultSet.getInt(1);
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return groupID;
     }
 
     public static void addToGroupMessages(int handle, String sender, String originalSender,
                                           LocalDateTime now, String content, int notReplyID) {
+        //formats date and time
+        DateTimeFormatter formatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = now.format(formatObj);
 
+        Connector.queryWithoutResult("INSERT INTO groupmessages (groupID, sender, message, date"
+                + ", replyMessageID, originalSender) VALUES '" + handle + "', '"
+                + sender + "', '" + content + "', '" + formattedDate + "', "
+                + notReplyID + ", '" + originalSender + "';");
     }
 }
