@@ -15,7 +15,7 @@ public class DmController {
     final static int replyShowNum = 10, notReplyID = 0;
     final static String inReplyTo = "In reply to: ", ellipsis = "...";
     public static DirectMessenger dm;
-    public static boolean uBlocked, uBlocker, usersHaveDM;
+    public static boolean uBlocked, uBlocker;
 
     public static void attemptEntrance(String username) {
         if (Loginner.loginState == LoginState.SIGN_OUT){
@@ -71,8 +71,7 @@ public class DmController {
             if (actOnCommand(line)) break;
             else {
                 if (uBlocked || uBlocker) {blockMessage(); continue;}
-                if (!usersHaveDM) dm.newDirectMessengerID(LocalDateTime.now(), line, notReplyID);
-                else Database.Saver.addToMessages(dm.getDirectID().getHandle(),
+                Database.Saver.addToMessages(dm.getDirectID().getHandle(),
                         dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDateTime.now(), line, notReplyID);
             }
         }

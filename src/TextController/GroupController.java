@@ -138,15 +138,17 @@ public class GroupController {
             return;
         }
 
-        Database.Changer.removeFromBanList(username);
+        Database.Changer.removeFromBanList(group.getGroupID().getHandle(), username);
     }
 
     private static void leave() {
         if (Loginner.loginnedUser.getUsername().equals(group.getOwner().getUsername()))
             Database.Changer.removeGroup(group.getGroupID().getHandle());
-        else group.getParticipants().remove(Loginner.loginnedUser);
+        else {
+            group.getParticipants().remove(Loginner.loginnedUser);
+            Database.Changer.removeParticipant(group.getGroupID().getHandle(), Loginner.loginnedUser.getUsername());
+        }
         Loginner.loginnedUser.getGroups().removeIf(g -> g.getGroupID().equals(group.getGroupID()));
-        Database.Changer.removeFromGroups(Loginner.loginnedUser.getUsername(), group.getGroupID().getHandle());
     }
 
     private static void forward(int num, String where) {
