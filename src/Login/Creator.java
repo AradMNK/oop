@@ -34,6 +34,11 @@ public class Creator {
             return;
         }
 
+        if (user.contains(",")){
+            TextController.println("Username cannot contain a comma (\",\"). Please try again with /" + CommandType.CREATE_ACC);
+            return;
+        }
+
         if (Database.Loader.usernameExists(user)){
             TextController.println("Username already exists. Choose another username please.");
             return;

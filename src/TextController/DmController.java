@@ -2,7 +2,6 @@ package TextController;
 
 import Builder.DirectMessengerBuilder;
 import Builder.GroupBuilder;
-import Builder.UserBuilder;
 import Login.LoginState;
 import Login.Loginner;
 import Objects.Group;
@@ -27,9 +26,7 @@ public class DmController {
            return;
         }
 
-        dm = (Database.Loader.usersHaveDm(Loginner.loginnedUser.getUsername(), username)) ?
-            DirectMessengerBuilder.getDirectMessengerFromDatabase(Loginner.loginnedUser, username)
-        : new DirectMessenger(Loginner.loginnedUser, UserBuilder.getUserFromDatabase(username));
+        dm = DirectMessengerBuilder.getDirectMessengerFromDatabase(Loginner.loginnedUser, username);
         //if users have dm load else create
 
         showPreviousChats();
@@ -71,8 +68,8 @@ public class DmController {
             if (actOnCommand(line)) break;
             else {
                 if (uBlocked || uBlocker) {blockMessage(); continue;}
-                Database.Saver.addToMessages(dm.getDirectID().getHandle(),
-                        dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDateTime.now(), line, notReplyID);
+                Database.Saver.addToMessages(dm.getUser().getUsername(), dm.getRecipient().getUsername(),
+                        dm.getUser().getUsername(), LocalDateTime.now(), line, notReplyID);
             }
         }
     }
@@ -156,8 +153,8 @@ public class DmController {
             return;
         }
 
-        Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
-                Loginner.loginnedUser.getUsername(), message.getOriginalUsername(), LocalDateTime.now(),
+        Database.Saver.addToMessages(Loginner.loginnedUser.getUsername(), username,
+                message.getOriginalUsername(), LocalDateTime.now(),
                 message.getContent(),notReplyID);
     }
 
@@ -171,8 +168,8 @@ public class DmController {
         }
 
         TextController.println("[" + getInReplyTo(num) + "]");
-        Database.Saver.addToMessages(dm.getDirectID().getHandle(),
-                dm.getUser().getUsername(), dm.getUser().getUsername(), LocalDateTime.now(), TextController.getLine(),
+        Database.Saver.addToMessages(dm.getUser().getUsername(), dm.getRecipient().getUsername(),
+                dm.getUser().getUsername(), LocalDateTime.now(), TextController.getLine(),
                 dm.getShownMessages().get(num).getID().getHandle());
     }
     private static void edit(int num) {

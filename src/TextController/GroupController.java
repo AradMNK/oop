@@ -194,8 +194,8 @@ public class GroupController {
             return;
         }
 
-        Database.Saver.addToMessages(Database.Loader.getDirectID(Loginner.loginnedUser.getUsername(), username),
-                Loginner.loginnedUser.getUsername(), message.getOriginalUsername(), LocalDateTime.now(),
+        Database.Saver.addToMessages(Loginner.loginnedUser.getUsername(), username,
+                message.getOriginalUsername(), LocalDateTime.now(),
                 message.getContent(),notReplyID);
     }
 
