@@ -267,29 +267,6 @@ public class Loader {
         return false;
     }
 
-    public static int getDirectID(String username1, String username2) {
-        //declares the directID
-        int directID = 0;
-
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            //finds the direct
-            resultSet = connection.prepareStatement("SELECT directID FROM directs WHERE (user1 = '" + username1
-                                                        + "' AND user2 = '" + username2 + "') OR (user1 = '" + username2
-                                                        + "' AND user2 = '" + username1 + "');").executeQuery();
-
-            //checks if the resultSet is empty
-            if (resultSet.next()){
-                resultSet.next();
-                directID = resultSet.getInt(1);
-            }
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
-        return directID;
-    }
-
     public static String getDirectMessageContent (int handle){
         //declares the message found in the result set
         String message;
