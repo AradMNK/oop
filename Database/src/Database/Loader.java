@@ -641,4 +641,32 @@ public class Loader {
     public static int getUnreadCountForGroupID(String forUsername, int groupID) {
         return 0;
     }
+
+    public static String[] getBlocklist(String username) {
+        return new String[2];
+    }
+
+    public static String[] getFollowers(String username) {
+        return new String[2];
+    }
+
+    public static String[] getFollowings(String username) {
+        return new String[2];
+    }
+
+    public static int[] getUserPosts() {
+        return new int[2];
+    }
+
+    public static int[] getGroupsOfUser(String username) {
+        return new int[2];
+    }
+
+    public static String[] getCommentDetails(int commentID) {
+        return new String[2]; //do the same as user details
+    }
+
+    public static String[] getPostDetails(int commentID) {
+        return new String[2]; //do the same as user details
+    }
 }

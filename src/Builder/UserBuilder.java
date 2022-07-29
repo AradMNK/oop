@@ -5,6 +5,8 @@ import Objects.User;
 import Objects.UserType;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class UserBuilder {
     public static User getUserFromDatabase(String username){
@@ -12,10 +14,12 @@ public class UserBuilder {
     }
 
     public static User getUserFromDatabaseFull(String username){
-        User user = getUserFromDatabaseWithFollowers(username);
+        User user = getUserFromDatabaseWithPosts(username);
         user.setFeed(FeedBuilder.getFeedFromDatabase(username));
-        //user.getBlocklist()
-
+        user.setFollowers(Arrays.stream(Database.Loader.getBlocklist(username)).collect(Collectors.toSet()));
+        user.setFollowers(Arrays.stream(Database.Loader.getFollowers(username)).collect(Collectors.toSet()));
+        user.setFollowings(Arrays.stream(Database.Loader.getFollowings(username)).collect(Collectors.toSet()));
+        addGroups(user);
         return user;
     }
 
@@ -34,20 +38,26 @@ public class UserBuilder {
     }
 
     public static User getUserFromDatabaseWithPosts(String username){
-        //FIXME this only has posts and username
-
-        return new User();
+        User user = getUserFromDatabaseDetailsOnly(username);
+        int[] postIDs = Database.Loader.getUserPosts();
+        for (int postID: postIDs) user.getPosts().add(PostBuilder.getPostFromDatabaseWithComments(postID));
+        return user;
     }
 
     public static User getUserFromDatabaseWithFollowers(String username){
-        //FIXME this only has username and followers
-
-        return new User();
+        User user = getUserFromDatabaseDetailsOnly(username);
+        user.setFollowers(Arrays.stream(Database.Loader.getFollowers(username)).collect(Collectors.toSet()));
+        return user;
     }
 
     public static User getUserFromDatabaseWithFollowings(String username){
-        //FIXME you want to implement the others, then set the user posts and feed and etc. to them while building the user
+        User user = getUserFromDatabaseDetailsOnly(username);
+        user.setFollowings(Arrays.stream(Database.Loader.getFollowings(username)).collect(Collectors.toSet()));
+        return user;
+    }
 
-        return new User();
+    private static void addGroups(User user) {
+        int[] groupIDs = Database.Loader.getGroupsOfUser(user.getUsername());
+        for (int groupID : groupIDs) user.getGroups().add(GroupBuilder.getGroupFromDatabase(groupID));
     }
 }

@@ -3,13 +3,14 @@ package Objects;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 
 public class User {
     private String name, username, subtitle, bio;
     private Handle pfp, theme;
     private Feed feed;
     private final HashSet<Post> posts = new HashSet<>();
-    private final HashSet<String> blocklist = new HashSet<>(), followers = new HashSet<>(), followings = new HashSet<>();
+    private Set<String> blocklist = new HashSet<>(), followers = new HashSet<>(), followings = new HashSet<>();
     private final HashSet<Group> groups = new HashSet<>();
     private LocalDate dateJoined;
 
@@ -32,10 +33,14 @@ public class User {
     public void setTheme(Handle theme) {this.theme = theme;}
 
     public HashSet<Post> getPosts() {return posts;}
-    public HashSet<String> getBlocklist() {return blocklist;}
-    public HashSet<String> getFollowers() {return followers;}
-    public HashSet<String> getFollowings() {return followings;}
-    public HashSet<Group> getGroups() {return groups;}
+    public Set<String> getBlocklist() {return blocklist;}
+    public Set<String> getFollowers() {return followers;}
+    public Set<String> getFollowings() {return followings;}
+    public Set<Group> getGroups() {return groups;}
+
+    public void setBlocklist(Set<String> blocklist) {this.blocklist = blocklist;}
+    public void setFollowers(Set<String> followers) {this.followers = followers;}
+    public void setFollowings(Set<String> followings) {this.followings = followings;}
 
     public LocalDate getDateJoined() {return dateJoined;}
     public void setDateJoined(LocalDate dateJoined) {this.dateJoined = dateJoined;}
