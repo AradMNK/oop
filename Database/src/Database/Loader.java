@@ -11,7 +11,7 @@ public class Loader {
         ResultSet resultSet;
         try {
             resultSet = connection.prepareStatement("SELECT * FROM users WHERE username = '" + username
-                                                        + "' AND hashPass = " + hashPass + ";").executeQuery();
+                                                        + "' AND hashPass = '" + hashPass + "';").executeQuery();
 
             //checks if the resultSet is empty
             if (resultSet.next()) {
@@ -163,40 +163,20 @@ public class Loader {
         return likerUsernames;
     }
 
-    public static String getUserName(String username) {
-        //declares the name found in the results
-        String name = null;
-
-        Connection connection = Connector.connector.connect();
-        ResultSet resultSet;
-        try {
-            resultSet = connection.prepareStatement("SELECT name FROM users WHERE username = '" + username
-                                                        + "';").executeQuery();
-            //checks if the resultSet is empty
-            if (resultSet.next()){
-                resultSet.next();
-                name = resultSet.getString(1);
-            }
-        }
-        catch (SQLException e) {e.printStackTrace();}
-        finally {Connector.connector.disconnect();}
-        return name;
-    }
-
     public static String[] getUserDetails (String username){
         //declares a string array to store the details
-        String[] details = new String[4];
+        String[] details = new String[5];
 
         Connection connection = Connector.connector.connect();
         ResultSet resultSet;
         try {
-            resultSet = connection.prepareStatement("SELECT bio, subtitle, date, type FROM users WHERE username = '"
+            resultSet = connection.prepareStatement("SELECT name, bio, subtitle, date, type FROM users WHERE username = '"
                                                         + username + "';").executeQuery();
 
             //checks if the resultSet is empty
             if (resultSet.next()){
                 resultSet.next();
-                for (int i = 0; i < 4; i++){
+                for (int i = 0; i < 5; i++){
                     details[i] = resultSet.getString(i+1);
                 }
             }
@@ -526,10 +506,39 @@ public class Loader {
     }
 
     public static int getSecurityQuestionNumber(String username) {
-        return 0;
+        //declares the security question number
+        int securityQuestionNumber = 0;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT questionID FROM users WHERE username = '"
+                                                        + username + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                securityQuestionNumber = resultSet.getInt(1);
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return securityQuestionNumber;
     }
 
     public static boolean doesSecurityQuestionAnswerMatch(String username, String answer) {
-        return true;
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT * FROM users WHERE username = '" + username
+                                                        + "' AND answer = '" + answer + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()) {
+                return true;
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return false;
     }
 }
