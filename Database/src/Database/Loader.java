@@ -151,7 +151,7 @@ public class Loader {
 
                 //gets the likes
                 resultSet = connection.prepareStatement("SELECT username FROM likes WHERE postID = " + postID
-                                                            + ":").executeQuery();
+                                                            + ";").executeQuery();
                 resultSet.next();
                 for (int i = 0; i < numberOfLikes; i++){
                     likerUsernames[i] = resultSet.getString(1);
@@ -562,11 +562,75 @@ public class Loader {
         return false;
     }
 
-    public static int[] getUnreadUsers (String username){
-        return new int[0];
+    public static String[] getUnreadUsers (String username){
+        //declares the empty array
+        String[] unreadUsers = new String[0];
+
+        //declares the number of users
+        int numberOfUsers;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT COUNT(DISTINCT username) FROM unreadusers WHERE forUsername = "
+                                                        + username + ";").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                //gets the number of likes
+                resultSet.next();
+                numberOfUsers = Integer.parseInt(resultSet.getString(1));
+
+                //declares the array and gets the usernames
+                unreadUsers = new String[numberOfUsers];
+
+                //gets the likes
+                resultSet = connection.prepareStatement("SELECT DISTINCT username FROM unreadusers WHERE forUsername = "
+                                                            + username + ";").executeQuery();
+                resultSet.next();
+                for (int i = 0; i < numberOfUsers; i++){
+                    unreadUsers[i] = resultSet.getString(1);
+                }
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return unreadUsers;
     }
 
     public static int[] getUnreadGroups (String username){
-        return new int[0];
+        //declares the empty array
+        int[] unreadGroups = new int[0];
+
+        //declares the number of groups
+        int numberOfGroups;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT COUNT(DISTINCT groupID) FROM unreadgroups WHERE forUsername = "
+                                                        + username + ";").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                //gets the number of likes
+                resultSet.next();
+                numberOfGroups = Integer.parseInt(resultSet.getString(1));
+
+                //declares the array and gets the usernames
+                unreadGroups = new int[numberOfGroups];
+
+                //gets the likes
+                resultSet = connection.prepareStatement("SELECT DISTINCT groupID FROM unreadgroups WHERE forUsername = "
+                                                            + username + ";").executeQuery();
+                resultSet.next();
+                for (int i = 0; i < numberOfGroups; i++){
+                    unreadGroups[i] = resultSet.getInt(1);
+                }
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+        return unreadGroups;
     }
 }
