@@ -169,10 +169,12 @@ public class Changer {
     }
 
     public static void userSees(String username, int groupID) {
-
+        Connector.queryWithoutResult("DELETE FROM unreadgroups WHERE forUsername = '"
+                                            + username + "' AND groupID = " + groupID +";");
     }
 
     public static void userSees(String forUsername, String usernameSender) {
-
+        Connector.queryWithoutResult("DELETE FROM unreadusers WHERE forUsername = '"
+                + forUsername + "' AND username = '" + usernameSender +"';");
     }
 }
