@@ -20,4 +20,12 @@ public enum SecurityQuestion {
 
     public static int numOfQuestions() {return values().length;}
     public static void write() {for (SecurityQuestion q: values()) TextController.println(q.saverID + ". " + q.question);}
+
+    public static SecurityQuestion getSecurityQuestionByNumber(int secQuestionNum) {
+        for (SecurityQuestion q : values()) if (secQuestionNum == q.saverID) return q;
+        throw new SecurityQuestionException();
+    }
+
+    @Override
+    public String toString(){return question;}
 }

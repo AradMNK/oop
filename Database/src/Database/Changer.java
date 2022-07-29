@@ -163,4 +163,8 @@ public class Changer {
         catch (SQLException e) {e.printStackTrace();}
         finally {Connector.connector.disconnect();}
     }
+
+    public static void changePassword(String username, String hash) {
+
+    }
 }

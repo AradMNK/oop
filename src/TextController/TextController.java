@@ -24,6 +24,7 @@ public class TextController {
     private static void actOnCommand(Command command){
         switch (command.getCommandType()){
             case LOGIN -> Loginner.attemptLogin(command.getArgs());
+            case FORGOT -> Loginner.forgotPassword(command.getArgs()[0]);
             case CREATE_ACC -> Creator.attemptCreate(command.getArgs());
             case EDIT_ACC -> UserEditor.edit();
             case SIGNOUT -> Loginner.signout();
@@ -94,6 +95,8 @@ public class TextController {
         println("Brings up this menu.");
         println("/" + CommandType.LOGIN + " (username) (password)");
         println("Use this to login.");
+        println("/" + CommandType.FORGOT + " (username)");
+        println("Use this to login using your security question and change your password.");
         println("/" + CommandType.SIGNOUT);
         println("Use this to sign out.");
         println("/" + CommandType.CREATE_ACC + " (username) (password) (name)");

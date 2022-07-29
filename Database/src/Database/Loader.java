@@ -524,4 +524,12 @@ public class Loader {
         finally {Connector.connector.disconnect();}
         return groupID;
     }
+
+    public static int getSecurityQuestionNumber(String username) {
+        return 0;
+    }
+
+    public static boolean doesSecurityQuestionAnswerMatch(String username, String answer) {
+        return true;
+    }
 }
