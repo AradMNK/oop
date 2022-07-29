@@ -129,6 +129,32 @@ public class Saver {
                 + ", replyMessageID, originalSender) VALUES '" + sender + "', '"
                 + receiver + "', '" + line + "', '" + formattedDate + "', "
                 + replyMsgID + ", '" + originalSender + "';");
+
+        //declares new message count
+        int newMessages;
+
+        //adds to new messages
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT count FROM unreadusers WHERE forUsername = '"
+                                                        + receiver + "' AND username = '" + sender + "';").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                newMessages = resultSet.getInt(1);
+                newMessages ++;
+                Connector.queryWithoutResult("UPDATE unreadusers SET count = " + newMessages
+                                                    + " WHERE forUsername = '" + receiver + "' AND username = '" + sender + "';");
+            }
+            else {
+                Connector.queryWithoutResult("INSERT INTO unreadusers (forUsername, username, count) VALUES '"
+                                                    + receiver + "', '" + sender + "', 1;");
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
     }
 
     public static void addToBlocklist(String blocker, String blocked) {
@@ -169,5 +195,55 @@ public class Saver {
                 + ", replyMessageID, originalSender) VALUES '" + handle + "', '"
                 + sender + "', '" + content + "', '" + formattedDate + "', "
                 + notReplyID + ", '" + originalSender + "';");
+
+        //declares the group members
+        String membersList;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT members FROM groups WHERE groupID = '"
+                                                        + handle + "';").executeQuery();
+
+            if (resultSet.next()){
+                resultSet.next();
+                membersList = resultSet.getString(1);
+
+                //splits the members and adds the new message
+                String[] members = membersList.split("");
+                for (int i = 0; i < members.length; i++){
+                    Saver.AddGroupMessageToUnreadMessages(handle, members[i]);
+                }
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
+    }
+
+    public static void AddGroupMessageToUnreadMessages (int groupID, String username){
+        //declares new message count
+        int newMessages;
+
+        Connection connection = Connector.connector.connect();
+        ResultSet resultSet;
+        try {
+            resultSet = connection.prepareStatement("SELECT count FROM unreadgroups WHERE forUsername = '"
+                    + username + "' AND groupID = " + groupID + ";").executeQuery();
+
+            //checks if the resultSet is empty
+            if (resultSet.next()){
+                resultSet.next();
+                newMessages = resultSet.getInt(1);
+                newMessages ++;
+                Connector.queryWithoutResult("UPDATE unreadgroups SET count = " + newMessages
+                        + " WHERE forUsername = '" + username + "' AND groupID = " + groupID + ";");
+            }
+            else {
+                Connector.queryWithoutResult("INSERT INTO unreadgroups (forUsername, groupID, count) VALUES '"
+                        + username + "', " + groupID + ", 1;");
+            }
+        }
+        catch (SQLException e) {e.printStackTrace();}
+        finally {Connector.connector.disconnect();}
     }
 }
